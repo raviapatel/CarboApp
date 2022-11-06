@@ -4,7 +4,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-#from CarboModel import CarboModel
+from CarboModel import CarboModel
 import Silva
 
 #Formel
@@ -108,7 +108,7 @@ secondaryBackgroundColor="#F0F2F6"
 textColor="#262730"
 font="sans serif"
 
-st.title("Calculation of Carbonation Depth")
+st.title("Calculation of Carbonation depth")
 #st.subheader("Calculation:")
 st.sidebar.subheader("Select Model:")
 sb = st.sidebar.selectbox(" ",("Home","Overview","Model 1", "Model 2", "Model 3", "Model 4", "Model 5", "Model 6", "Model 7", "Model 8", "Model 9", "Model 10",))
@@ -116,7 +116,7 @@ sb = st.sidebar.selectbox(" ",("Home","Overview","Model 1", "Model 2", "Model 3"
 
 if sb == "Home":        # Startseite
    st. header("Welcome")
-    
+
 if sb == "Overview":    # Übersicht der Modelle
     st.header("Overview of Models")
     
@@ -175,17 +175,6 @@ if sb == "Overview":    # Übersicht der Modelle
     col2.write("Input:")
     col2.write ("- ...")
     col2.write ("- ...")
-    
-    st.subheader("Exposure classes:")
-    col1, col2 = st.columns([1,3])
-    col1.write("XC1")
-    col2.write("Dry or permanently wet")
-    col1.write("XC2")
-    col2.write("Wet, rarely dry")
-    col1.write("XC3")
-    col2.write("Moderate humidity")
-    col1.write("XC4")
-    col2.write("Cyclic wet and dry")
 
 elif sb == "Model 1":   # Modell 01 - fib (2006)
     st.subheader("Model 1")
@@ -198,34 +187,24 @@ elif sb == "Model 1":   # Modell 01 - fib (2006)
         rechnung(rh,t,fcm,building)
 
 elif sb == "Model 2":   # Modell 02 - Guiglia (2013)
-    name = st.subheader("Model 2")
-    rh = st.slider("Relative humidity (%):", 1,100,50, help=("E.g. the relative humidity in Germany is approximately between 68 and 88 percent"))    
-    ExpC = st.selectbox("Exposure class:", ("XC1","XC2","XC3","XC4")) 
+    st.subheader("Model 2")
+    name = st.subheader(" Model 2: ")
+    rh = st.slider("Relative humidity (%):j ", 1,100,50, help=("E.g. the relative humidity in Germany is approximately between 68 and 88 percent"))    
+    ExpC = st.selectbox("Exposure class:j ", ("XC1","XC2","XC3","XC4")) 
     t = st.slider("Minimum lifetime (years): ", 1,100,50)
+    CO2 = st.number_input("CO2:",0.0000,None,step=(0.0005))
+    phi_clinker = st.number_input("phi_Clinker:")
+    C = st.number_input("C:")
     fc = st.number_input("Mean value of the concrete compressive cylinder strength at 28 days fcm (N/mm²):",0.0,None,25.0,step=(0.5))
-    st.write("Optional:")
-    if st.checkbox("CO2"):    
-        CO2 = st.number_input("CO2: (%)",0.0,None,0.04,step=(0.01))
-    else: 
-        CO2 = 0.04
-    if st.checkbox("C"):
-         C = st.number_input("C: (kg/m³)",0.0,None,220.0,step=(0.5))
-    else:
-         C = 220
-    if st.checkbox("phi_clinker"): 
-        phi_clinker = st.number_input("phi_Clinker: (%)",0.0,None,98.0,step=(0.5)) * 0.01
-    else:
-        phi_clinker = 0.98
-   
     
     if st.button("Calculate "): 
-        Modell02 = Silva.Silva(name, C, fc, phi_clinker, ExpC, rh, CO2) #(name, C, f_c, phi_clinker, ExpC, RH, CO2))(name, 0.5, 25, 0.5, 0.5, rh, 0.05)
-        st.success(Modell02.x_c(t))
+        Modell01 = Silva.Silva(name, C, fc, phi_clinker, ExpC, rh, CO2) #(name, C, f_c, phi_clinker, ExpC, RH, CO2))(name, 0.5, 25, 0.5, 0.5, rh, 0.05)
+        st.success(Modell01.x_c(t))
         t_range = np.arange(0, t, 0.1)
         fig1, ax1 = plt.subplots()
         ax1.grid(True)
-        ax1.set(xlabel = "Time (years)", ylabel = "Carbonation depth (mm)", title = sb)
-        ax1.plot(t_range, Modell02.x_c(t_range))
+        ax1.set(xlabel = "Time (years)", ylabel = "X(t) (mm)", title = sb)
+        ax1.plot(t_range, Modell01.x_c(t_range))
         #plt.xscale("log")
         st.pyplot(fig1)    #oder: st.write(fig1)
 
