@@ -1,297 +1,227 @@
-#Testseite
-
 import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-#from CarboModel import CarboModel
-import Silva
-
-#Formel
-def xt_rechnung(a:int,ke:float,fcm:float,t:int)->float:
-    """
-    
-
-    Parameters
-    ----------
-    a : int
-        parameter (if abutments and piers or tunnels) (-)
-    ke : float
-        environmental function (-)
-    fcm : float
-        mean value of the concrete compressive cylinder strength at 28 days fcm (N/mm²)
-    t : int
-        time (years)
-
-    Returns
-    -------
-    float
-        carbonation depth (mm)
-
-    """
-    return (a * pow(ke*pow(fcm,-2.1),0.5)*pow(t,0.5))
-    
-#Ablauf Berechnung, Plotten:
-def rechnung(rh:int,t:int,fcm:float,building:str)->None:
-    """
-    
-
-    Parameters
-    ----------
-    rh : int
-        relative humidity (%)
-    t : int
-        time (years)
-    fcm : float
-        mean value of the concrete compressive cylinder strength at 28 days fcm (N/mm²)
-    building : str
-        abutments and piers or tunnels
-    Returns
-    -------
-    None
-        -
-
-    """
-    #Berechnung ke:
-    ke = (((1.0-((rh*0.01)**5.0)))/(1.0-((65.0/100.0)**5.0)))**2.5
-    
-    #if int(ga) == 1:
-     #   ke = 1.025
-    #elif int(ga) == 2:
-     #   ke = 0.947
-    #elif int(ga) == 3:
-     #   ke = 0.691
-        
-    #fcm = float(fcm) 
-    #t = float(t) 
-    #ke = float(ke)
-    
-    if fcm == 0:
-        
-        st.warning("fcm can't be 0")
-        return None
-        
-    if building == "abutments and piers":
-        
-        a = 163
-        
-    elif building == "others":
-        
-        a = 206
-    
-    xt = xt_rechnung(a,ke,fcm,t)
-    xt = round(xt,1)
-    
-    st.success("Carbonation depth of the concrete: " + str(xt) + " mm")
-    
-    #Plotten:
-    t_min = 0
-    t_max = t
-    #t_range = np.linspace(t_min, t_max, 500)
-    t_range = np.arange(t_min, t_max, 0.1)
-    fig1, ax1 = plt.subplots()
-    ax1.grid(True)
-    ax1.set(xlabel = "Time (years)", ylabel = "X(t) (mm)", title = sb)
-    ax1.plot(t_range, xt_rechnung(a, ke, fcm, t_range))
-    #plt.xscale("log")
-    st.pyplot(fig1)
-    
-    #a = pd.DataFrame(((0,0),(xt,t)), columns=["Carbonation depth X(t) (mm)","√t (years)"])
-    #st.line_chart(a, y = "Carbonation depth X(t) (mm)", x = "√t (years)") 
-    
-    return None
+import plotly.express as ex
+from CarboModels import Häkkinen
+from CarboModels import CECS220
+from CarboModels import Silva
+from CarboModels import Guiglia
 
 #Aufbau Website:
-st.primaryColor="#F66586"
-backgroundColor="#10000"
-secondaryBackgroundColor="#F0F2F6"
-textColor="#262730"
-font="sans serif"
-
 st.title("Calculation of Carbonation Depth")
-#st.subheader("Calculation:")
-st.sidebar.subheader("Select Model:")
-sb = st.sidebar.selectbox(" ",("Home","Overview","Model 1", "Model 2", "Model 3", "Model 4", "Model 5", "Model 6", "Model 7", "Model 8", "Model 9", "Model 10",))
-#st.selectbox("Choose a Model:", ("Home","Model 1", "Model 2"))
 
-if sb == "Home":        # Startseite
+tab1, tab2, tab3, tab4 = st.tabs(["Home","Overview","Calculations","Exposure classes"])
+
+with tab1:              # Homepage
    st. header("Welcome")
     
-if sb == "Overview":    # Übersicht der Modelle
+with tab2:              # Overview of the Models
     st.header("Overview of Models")
     
-    st.subheader("Model 1: ...")
-    col1, col2 = st.columns([3,1])
-    col1.write("Explanation of Model")
-    col2.write("Input:")
-    col2.write ("- ...")
-    col2.write ("- ...")
+    st.write("All models are based on the square-root-of-time-rule:")
+    st.latex("X(t)=k*\sqrt{t}")
+    col1, col2 = st.columns([1,3])
+    col1.latex("\small k:")
+    col2.latex("\small describes \, the \, carbonation \, rate \, ({{mm} \over {years^{0.5}}})")
+    col1.latex("\small t:")
+    col2.latex("\small time \, (years)")
+
+    st.subheader("Model 01: Häkkinen (1993)")
+    st.latex("k=c_{env}*c_{air}*a*f_{cm,28}^b")
+    col1, col2 = st.columns([1,3])
+    col1.latex("\small c_{env}:")
+    col2.latex("\small \sf environmental \, coefficient")
+    col1.latex("\small c_{air}:")
+    col2.latex("\small \sf air \, content \, coefficient")
+    col1.latex("\small a,b:")
+    col2.latex("\small \sf parameters \, relating \, to \, cement \, type")
+    col1.latex("\small f_{cm,28}:")
+    col2.latex("\small \sf mean \, compressive \, strength \, of \, concrete \, at \, age \, of \, 28 \, days")
     
-    st.subheader("Model 2: ...")
+    st.subheader("Model 02: fib (2006)")
     col1, col2 = st.columns([3,1])
-    col1.write("Explanation of Model")
-    col2.write("Input:")
-    col2.write ("- ...")
-    col2.write ("- ...")
     
-    st.subheader("Model 3: ...")
+    st.subheader("Model 03: CECS (2007)")
+    st.latex("k=3K_{CO_2}K_{kl}K_{kt}K_{ks}K_{F}T^{0.25}RH^{1.5}(1-RH)({58\over f_{cuk}}-0.76)")
+    col1, col2 = st.columns([1,3])
+    col1.latex("\small K_{CO_2}:")
+    col2.latex("\small \sf CO_2 \, density \, factor, \, K_{CO_2}=\sqrt{{c_{CO_2}\over{0.03}}}")
+    col1.latex("\small K_{kl}:")
+    col2.latex("\small \sf location \, factor, \, K_{kl}=1.4 \, for \, corner \, of \, the \, component \, and \, 1.0 \, for \, other \, area")
+    col1.latex("\small K_{kt}:")
+    col2.latex("\small \sf curing \, factor, \, K_{kt}=1.2")
+    col1.latex("\small K_{ks}:")
+    col2.latex("\small \sf stress \, factor, \, K_{ks}=1.0 \, for \, compression \, condition \, and \, 1.1 \, for \, tension \, condition")
+    col1.latex("\small K_{F}:")
+    col2.latex("\small \sf fly \, ash \, factor, \, K_{F}=1.0+13.34F^{3.3}, \, F \, is \, the \, fly \, ash \, content\, (weight ratio)")
+    col1.latex("\small T:")
+    col2.latex("\small \sf temperature")
+    col1.latex("\small RH:")
+    col2.latex("\small \sf realtive \, humidity")
+    col1.latex("\small f_{cuk}:")
+    col2.latex("\small \sf concrete \, charasterisitc \, compression \, strength")
+    
+    st.subheader("Model 04: Guiglia (2013)")
+    col1, col2 = st.columns([1,2])
+    col1.latex("k=163*\sqrt{k_e*f_{cm}^{-2.1}}")
+    col2.latex("\sf for \, abutments \, and \, piers")
+    col1.latex("k=206*\sqrt{k_e*f_{cm}^{-2.1}}") 
+    col2.latex("\sf for \, tunnels")
+    col1.latex("\small k_e:")
+    col2.latex("\small \sf environmental \, function")
+    col1.latex("\small f_{cm}")
+    col2.latex("\small\sf mean\,value\,of\,the\,concrete\,compressive\,cylinder\,strength\,at\,28\,days")
+    
+    st.subheader("Model 05: Silva (2014)")
     col1, col2 = st.columns([3,1])
-    col1.write("Explanation of Model")
-    col2.write("Input:")
-    col2.write ("- ...")
-    col2.write ("- ...")
-    
-    st.subheader("Model 4: ...")
+    st.subheader("Model 06: Yang (2014)")
     col1, col2 = st.columns([3,1])
-    col1.write("Explanation of Model")
-    col2.write("Input:")
-    col2.write ("- ...")
-    col2.write ("- ...")
     
-    st.subheader("Model 5: ...")
+    st.subheader("Model 07: Hills (2015)")
     col1, col2 = st.columns([3,1])
-    col1.write("Explanation of Model")
-    col2.write("Input:")
-    col2.write ("- ...")
-    col2.write ("- ...")
     
-    st.subheader("Model 6: ...")
+    st.subheader("Model 08: Greve-Dierfeld (2015)")
     col1, col2 = st.columns([3,1])
-    col1.write("Explanation of Model")
-    col2.write("Input:")
-    col2.write ("- ...")
-    col2.write ("- ...")
     
-    st.subheader("Model 7: ...")
+    st.subheader("Model 09: Ta (2016)")
     col1, col2 = st.columns([3,1])
-    col1.write("Explanation of Model")
-    col2.write("Input:")
-    col2.write ("- ...")
-    col2.write ("- ...")
     
-    st.subheader("Model 8: ...")
+    st.subheader("Model 10: Ekolu (2018)")
     col1, col2 = st.columns([3,1])
-    col1.write("Explanation of Model")
-    col2.write("Input:")
-    col2.write ("- ...")
-    col2.write ("- ...")
+   
+    st.subheader("Model 11: Possan (2021)")
+    col1, col2 = st.columns([3,1])
     
-    st.subheader("Exposure classes:")
+with tab3:              # Calculations
+    st.header("Choose a Model:")
+    sb = st.selectbox("Choose a Model:",("Model 01 - Häkkinen", "Model 02 - fib", "Model 03 - CECS", "Model 04 - Guiglia", "Model 05 - Silva", "Model 06 - Yang", "Model 07 - Hills", "Model 08 - Greve-Dierfeld", "Model 09 - Ta", "Model 10 - Ekolu", "Model 11 - Possan"), label_visibility="collapsed")
+
+    if sb == "Model 01 - Häkkinen":         # Häkkinen
+        col1, col2  = st.columns([1,1])
+        name = "M01"
+        with col1:
+            Exposed = st.radio(" ", ["Sheltered from rain", "Exposed to rain"])
+            f_c = st.number_input("mean compressive strength of the concrete at the age of 28 days (MPa):")
+            C = st.number_input("Clinker Content (kg/m³):")
+#        with col2:        
+#            st.radio("  ", ["Not air entrained", "Air entrained"])
+        with col2:
+            FA = st.number_input("Fly ash (kg/m³):")
+            SF = st.number_input("Silicia fume (kg/m³):")
+            GGBS = st.number_input("Blast furnance slag (kg/m³):")
+        t = int(st.slider("Minimum lifetime (years): ", 1,100,50))
+       
+        if st.button("Calculate "): 
+            Modell01 = Häkkinen(name, C, f_c, Exposed, FA, SF, GGBS)
+            print("gut")
+            print(Exposed)
+            st.success("Carbonation depth: " + str(round(Modell01.x_c(t),1)) + " mm")
+            
+    elif sb == "Model 02 - fib":            # fib
+        st.subheader("leer")
+    
+    elif sb == "Model 03 - CECS":           # CECS
+        st.subheader("Model 3")
+        name = "M03"
+        col1, col2 = st.columns([1,1])
+        with col1:
+            tension = st.radio("Stress:", ["pressure", "tension"])
+            f_c = st.number_input("concrete characteristic compression strength (MPa):")
+            T = st.number_input("Temperature: (°C)")
+            RH = st.number_input("Relative humidity (%):")
+        with col2:
+            location = st.radio("Location of component:", ["corner", "other area"])
+            FA = st.number_input("Fly ash content (weight ratio):")
+            CO2 = st.number_input("CO2density around concrete surface:")
+        t = int(st.slider("Minimum lifetime (years): ", 1,100,50))
+      
+        if st.button("Calculate "): 
+            Modell03 = CECS220(name, f_c, FA, tension, location, T, RH, CO2) 
+            st.success("Carbonation depth: " + str(round(Modell03.x_c(t),1)) + " mm")
+        
+    elif sb == "Model 04 - Guiglia":        # Guiglia
+        
+       name = "M04"
+       col1, col2 = st.columns([1,1])
+       with col1: 
+           building = st.selectbox("Building type:", ("Tunnel","others"))
+           rh = st.number_input("Relative humidity (%):", 1,100,50)    
+       with col2:
+           fc = st.number_input("Concrete compressive strength fcm (N/mm²):",0.0,None,25.0,step=(0.5))
+          
+       t = st.slider("Minimum lifetime (years): ", 1,100,50)
+
+       if st.button("Calculate "): 
+           Modell04 = Guiglia(name, fc, rh, building) #(name, C, f_c, phi_clinker, ExpC, RH, CO2))(name, 0.5, 25, 0.5, 0.5, rh, 0.05)
+           st.success("Carbonation depth: " + str(round(Modell04.x_c(t),1)) + " mm")
+           st.success("k =" + str(round(Modell04.karbo,2)) + " mm/year^0.5")
+           t_range = np.arange(0, t+1)
+           print(t_range)
+           x_clist = Modell04.x_cList(t)
+           df=pd.DataFrame(data=(x_clist), index=("Year %d" % i for i in range(t+1)), dtype=(str))#, columns=("Carbonation depth"))
+           a = st.dataframe(df, use_container_width=True)
+           
+           st.download_button("Download table", df.to_csv())
+           fig = ex.line(x_clist, title=("Model 04 - Guiglia")) #, x="time (years)", y="carbontion depth (mm)")
+           st.plotly_chart(fig, use_container_width=True)
+           
+    elif sb == "Model 05 - Silva":          # Silva
+        name = "M05"
+        col1, col2 = st.columns([1,1])
+        with col1:
+            rh = st.number_input("Relative humidity (%):", 1,100,50)    
+            ExpC = st.selectbox("Exposure class:", ("XC1","XC2","XC3","XC4")) 
+        with col2:
+            fc = st.number_input("Concrete compressive strength fcm (N/mm²):",0.0,None,25.0,step=(0.5))
+        with col1: CO2 = st.number_input("CO2: (%)",0.0,None,0.04,step=(0.01))
+        with col2: C = st.number_input("C: (kg/m³)",0.0,None,220.0,step=(0.5))
+        t = st.slider("Minimum lifetime (years): ", 1,100,50)
+       
+        if st.button("Calculate "): 
+            Modell05 = Silva(name, C, fc, ExpC, rh, CO2) #(name, C, f_c, phi_clinker, ExpC, RH, CO2))(name, 0.5, 25, 0.5, 0.5, rh, 0.05)
+            st.success("Carbonation depth: " + str(round(Modell05.x_c(t),1)) + " mm")
+            t_range = np.arange(0, t, 0.1)
+            fig1, ax1 = plt.subplots()
+            ax1.grid(True)
+            ax1.set(xlabel = "Time (years)", ylabel = "Carbonation depth (mm)", title = sb)
+            ax1.plot(t_range, Modell05.x_c(t_range))
+            #plt.xscale("log")
+            st.pyplot(fig1)    #oder: st.write(fig1)
+            
+    elif sb == "Model 06 - Yang":           # Yang
+        st.subheader("leer")
+        
+    elif sb == "Model 07 - Hills":          # Hills
+        st.subheader("leer")
+        
+    elif sb == "Model 08 - Greve-Dierfeld": # Geve-Dierfeld
+        st.subheader("leer")
+        
+    elif sb == "Model 09 - Ta":             # Ta
+        st.subheader("leer")
+        
+    elif sb == "Model 10 - Ekolu":          # Ekolu
+        st.subheader("leer")
+
+    elif sb == "Model 11 - Possan":         # Possan
+        st.subheader("leer")
+
+with tab4:              # Exposure classes
+    st.header("Exposure classes:")
     col1, col2 = st.columns([1,3])
     col1.write("XC1")
     col2.write("Dry or permanently wet")
+    col1, col2 = st.columns([1,3])
     col1.write("XC2")
     col2.write("Wet, rarely dry")
+    col1, col2 = st.columns([1,3])
     col1.write("XC3")
     col2.write("Moderate humidity")
+    col1, col2 = st.columns([1,3])
     col1.write("XC4")
     col2.write("Cyclic wet and dry")
-
-elif sb == "Model 1":   # Modell 01 - fib (2006)
-    st.subheader("Model 1")
-    building = st.selectbox("Building type:", ("abutments and piers","others"))
-    rh = st.slider("Relative humidity (%):", 1,100,50, help=("E.g. the relative humidity in Germany is approximately between 68 and 88 percent"))
-    t = st.slider("Minimum lifetime (years):", 1,100,50)
-    fcm = st.number_input("Mean value of the concrete compressive cylinder strength at 28 days fcm (N/mm²):",0.0,None,25.0,step=(0.5))
-
-    if st.button("Calculate"):
-        rechnung(rh,t,fcm,building)
-
-elif sb == "Model 2":   # Modell 02 - Guiglia (2013)
-    name = st.subheader("Model 2")
-    rh = st.slider("Relative humidity (%):", 1,100,50, help=("E.g. the relative humidity in Germany is approximately between 68 and 88 percent"))    
-    ExpC = st.selectbox("Exposure class:", ("XC1","XC2","XC3","XC4")) 
-    t = st.slider("Minimum lifetime (years): ", 1,100,50)
-    fc = st.number_input("Mean value of the concrete compressive cylinder strength at 28 days fcm (N/mm²):",0.0,None,25.0,step=(0.5))
-    st.write("Optional:")
-    if st.checkbox("CO2"):    
-        CO2 = st.number_input("CO2: (%)",0.0,None,0.04,step=(0.01))
-    else: 
-        CO2 = 0.04
-    if st.checkbox("C"):
-         C = st.number_input("C: (kg/m³)",0.0,None,220.0,step=(0.5))
-    else:
-         C = 220
-    if st.checkbox("phi_clinker"): 
-        phi_clinker = st.number_input("phi_Clinker: (%)",0.0,None,98.0,step=(0.5)) * 0.01
-    else:
-        phi_clinker = 0.98
-   
     
-    if st.button("Calculate "): 
-        Modell02 = Silva.Silva(name, C, fc, phi_clinker, ExpC, rh, CO2) #(name, C, f_c, phi_clinker, ExpC, RH, CO2))(name, 0.5, 25, 0.5, 0.5, rh, 0.05)
-        st.success(Modell02.x_c(t))
-        t_range = np.arange(0, t, 0.1)
-        fig1, ax1 = plt.subplots()
-        ax1.grid(True)
-        ax1.set(xlabel = "Time (years)", ylabel = "Carbonation depth (mm)", title = sb)
-        ax1.plot(t_range, Modell02.x_c(t_range))
-        #plt.xscale("log")
-        st.pyplot(fig1)    #oder: st.write(fig1)
 
-elif sb == "Model 3":   # Modell 03 - fibGuiglia (2013)
-    st.subheader("Model 3")
-    
-elif sb == "Model 4":   # Modell 04 - Silva (2014)
-    st.subheader("Model 4")
-    
-elif sb == "Model 5":   # Modell 05 - Hills (2015)
-    st.subheader("Model 5")
-    
-elif sb == "Model 6":   # Modell 06 - fibGreveDierfeld (2016)
-    st.subheader("Model 6")
-    
-elif sb == "Model 7":   # Modell 07 - Ta (2016)
-    st.subheader("Model 7")
-    
-elif sb == "Model 8":   # Modell 08 - Ekolu (2018)
-    st.subheader("Model 8")
-    
-elif sb == "Model 9":   # Modell 09 - Possan (2021)
-    st.subheader("Model 9")
-    
-#elif sb == "Model 10": # Modell 10 - 
-    st.subheader("Model 10")
-
-
-
-
-
-#tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["Start", "Modell 1", "Modell 2", "Modell 3", "Modell 4", "Modell 5"])
-
-#with tab1:
-#    " "
-#
-#with tab2:
-#    st.subheader("Modell 1: ")
-#    building = st.selectbox("Building type:", ("abutments and piers","tunnels"))
-#    rh = st.slider("Relative humidity (%):", 1,100,50, help=("E.g. the relative humidity in Germany is approximately between 68 and 88 percent"))
-#    t = st.slider("Minimum lifetime (years):", 1,100,50)
-#    fcm = st.number_input("Mean value of the concrete compressive cylinder strength at 28 days fcm (N/mm²):",0.0,None,25.0,step=(0.5))
-#
-#    if st.button("Calculate"):
-#        rechnung(rh,t,fcm,building)
-#
-#with tab3:
-#    st.subheader(" Modell 2: ")
-#    rh = st.slider("Relative humidity (%):j ", 1,100,50, help=("E.g. the relative humidity in Germany is approximately between 68 and 88 percent"))    
-#    xc = st.selectbox("Exposure class:j ", ("XC1","XC2","XC3","XC4")) 
-#    t = st.slider("Minimum lifetime (years): ", 1,100,50)
-#    
-#    if st.button("Calculate "): 
-#        st.success("yes")
-#        
-#with tab4:
-#    st.subheader("Modell 3: ")
-#    
-#with tab5:
-#    st.subheader("Modell 4: ")
-#    
-#with tab6:
-#    st.subheader("Modell 5: ")
-    
-#with tab2:
-    
 #    df = pd.DataFrame((("64","84"),("67","104"),("75","64")),index=("1","2","3"),columns=("relative humidity (%)","number of rainy days (-)"))
-#    st.table(df)
-
+#   st.table(df)

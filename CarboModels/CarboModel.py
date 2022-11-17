@@ -41,7 +41,7 @@ class CarboModel:
         x_c(mm) : TYPE
             cabonation depth
         """
-        x_c = self.k(t) * t**0.5
+        x_c = self.karbo * t**0.5
         return x_c
     
     def x_cList(self, t):
@@ -58,7 +58,8 @@ class CarboModel:
         x_c(mm) : List with x.xx 
             cabonation depth
         """
+        t = int(t)
         x_c = []
-        for i in t:
+        for i in range(0,t+1):
             x_c.append(round(self.k(i)* i**0.5, 2))
         return x_c
