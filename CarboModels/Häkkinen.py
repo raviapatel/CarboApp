@@ -6,6 +6,7 @@ Created on Fri Mar 19 13:52:09 2021
 """
 from dataclasses import dataclass
 from CarboModels.CarboModel import CarboModel 
+import streamlit as st
 
 @dataclass
 class Häkkinen(CarboModel):
@@ -48,46 +49,49 @@ class Häkkinen(CarboModel):
     name:str 
     C:float 
     f_c:float
-    Exposed:str    
+    exposed:str  
+    entrained:str
     FA:float 
     SF:float 
     GGBS:float 
     
     def __post_init__(self):
         
-        if self.Exposed == "Exposed to rain":  #Tab A2 in DuraCRete.1998
-            self.c_env=1
-        elif self.Exposed == "Sheltered from rain":
-            self.c_env=1    #warum nicht 0.5?
+        if self.exposed == "Exposed to rain":  #Tab A2 in DuraCRete.1998
+            self.c_env = 0.5
+        elif self.exposed == "Sheltered from rain":
+            self.c_env = 1.0   
         else:
             print('Error: exposure')
             return
         
+        if self.entrained == "Air entrained":
+            self.c_air = 0.7
+        elif self.entrained == "Not air entrained":
+            self.c_air = 1.0
+        
         if self.C>0 and  self.FA==0 and self.SF==0 and self.GGBS==0:   #Tab A2 in DuraCRete.1998
             self.a=1800
             self.b=-1.7
-            print("a")
         elif self.C>0 and self.FA>0 and self.SF==0 and self.GGBS==0:
             #print('recommended value FA=28%, here:', FA/(C+FA+SF+GGBS)*100)
             self.a=360
             self.b=-1.2
-            print("b")
         elif self.C>0 and self.FA==0 and self.SF>0 and self.GGBS==0:
             #print('recommended value SF=9%, here:', SF/(C+FA+SF+GGBS)*100)
             self.a=400
             self.b=-1.2
-            print("c")
         elif self.C>0 and self.FA==0 and self.SF==0 and self.GGBS>0:
             #print('recommended value GGBS=70%, here:', GGBS/(C+FA+SF+GGBS)*100)
             self.a=360
             self.b=-1.2
-            print("d")
         else:
             print('Error: mixture')
+            st.error("Error: Mixture")
             self.karbo=float('NaN')
             return
         
-        self.karbo = self.c_env*1*self.a*self.f_c**self.b
+        self.karbo = self.c_env*self.c_air*self.a*self.f_c**self.b
     
 
     def __repr__(self):

@@ -3,12 +3,16 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import plotly.express as ex
+from app.overwiew import overwiew
+#import button
 from CarboModels import Häkkinen
 from CarboModels import CECS220
 from CarboModels import Silva
 from CarboModels import Guiglia
+from CarboModels import Yang
 
 #Aufbau Website:
+st.set_page_config(page_title="Carbonation Depth", page_icon=None, layout="centered", initial_sidebar_state="auto", menu_items=None)
 st.title("Calculation of Carbonation Depth")
 
 tab1, tab2, tab3, tab4 = st.tabs(["Home","Overview","Calculations","Exposure classes"])
@@ -17,113 +21,38 @@ with tab1:              # Homepage
    st. header("Welcome")
     
 with tab2:              # Overview of the Models
-    st.header("Overview of Models")
-    
-    st.write("All models are based on the square-root-of-time-rule:")
-    st.latex("X(t)=k*\sqrt{t}")
-    col1, col2 = st.columns([1,3])
-    col1.latex("\small k:")
-    col2.latex("\small describes \, the \, carbonation \, rate \, ({{mm} \over {years^{0.5}}})")
-    col1.latex("\small t:")
-    col2.latex("\small time \, (years)")
-
-    st.subheader("Model 01: Häkkinen (1993)")
-    st.latex("k=c_{env}*c_{air}*a*f_{cm,28}^b")
-    col1, col2 = st.columns([1,3])
-    col1.latex("\small c_{env}:")
-    col2.latex("\small \sf environmental \, coefficient")
-    col1.latex("\small c_{air}:")
-    col2.latex("\small \sf air \, content \, coefficient")
-    col1.latex("\small a,b:")
-    col2.latex("\small \sf parameters \, relating \, to \, cement \, type")
-    col1.latex("\small f_{cm,28}:")
-    col2.latex("\small \sf mean \, compressive \, strength \, of \, concrete \, at \, age \, of \, 28 \, days")
-    
-    st.subheader("Model 02: fib (2006)")
-    col1, col2 = st.columns([3,1])
-    
-    st.subheader("Model 03: CECS (2007)")
-    st.latex("k=3K_{CO_2}K_{kl}K_{kt}K_{ks}K_{F}T^{0.25}RH^{1.5}(1-RH)({58\over f_{cuk}}-0.76)")
-    col1, col2 = st.columns([1,3])
-    col1.latex("\small K_{CO_2}:")
-    col2.latex("\small \sf CO_2 \, density \, factor, \, K_{CO_2}=\sqrt{{c_{CO_2}\over{0.03}}}")
-    col1.latex("\small K_{kl}:")
-    col2.latex("\small \sf location \, factor, \, K_{kl}=1.4 \, for \, corner \, of \, the \, component \, and \, 1.0 \, for \, other \, area")
-    col1.latex("\small K_{kt}:")
-    col2.latex("\small \sf curing \, factor, \, K_{kt}=1.2")
-    col1.latex("\small K_{ks}:")
-    col2.latex("\small \sf stress \, factor, \, K_{ks}=1.0 \, for \, compression \, condition \, and \, 1.1 \, for \, tension \, condition")
-    col1.latex("\small K_{F}:")
-    col2.latex("\small \sf fly \, ash \, factor, \, K_{F}=1.0+13.34F^{3.3}, \, F \, is \, the \, fly \, ash \, content\, (weight ratio)")
-    col1.latex("\small T:")
-    col2.latex("\small \sf temperature")
-    col1.latex("\small RH:")
-    col2.latex("\small \sf realtive \, humidity")
-    col1.latex("\small f_{cuk}:")
-    col2.latex("\small \sf concrete \, charasterisitc \, compression \, strength")
-    
-    st.subheader("Model 04: Guiglia (2013)")
-    col1, col2 = st.columns([1,2])
-    col1.latex("k=163*\sqrt{k_e*f_{cm}^{-2.1}}")
-    col2.latex("\sf for \, abutments \, and \, piers")
-    col1.latex("k=206*\sqrt{k_e*f_{cm}^{-2.1}}") 
-    col2.latex("\sf for \, tunnels")
-    col1.latex("\small k_e:")
-    col2.latex("\small \sf environmental \, function")
-    col1.latex("\small f_{cm}")
-    col2.latex("\small\sf mean\,value\,of\,the\,concrete\,compressive\,cylinder\,strength\,at\,28\,days")
-    
-    st.subheader("Model 05: Silva (2014)")
-    col1, col2 = st.columns([3,1])
-    st.subheader("Model 06: Yang (2014)")
-    col1, col2 = st.columns([3,1])
-    
-    st.subheader("Model 07: Hills (2015)")
-    col1, col2 = st.columns([3,1])
-    
-    st.subheader("Model 08: Greve-Dierfeld (2015)")
-    col1, col2 = st.columns([3,1])
-    
-    st.subheader("Model 09: Ta (2016)")
-    col1, col2 = st.columns([3,1])
-    
-    st.subheader("Model 10: Ekolu (2018)")
-    col1, col2 = st.columns([3,1])
-   
-    st.subheader("Model 11: Possan (2021)")
-    col1, col2 = st.columns([3,1])
+    overwiew()
     
 with tab3:              # Calculations
     st.header("Choose a Model:")
-    sb = st.selectbox("Choose a Model:",("Model 01 - Häkkinen", "Model 02 - fib", "Model 03 - CECS", "Model 04 - Guiglia", "Model 05 - Silva", "Model 06 - Yang", "Model 07 - Hills", "Model 08 - Greve-Dierfeld", "Model 09 - Ta", "Model 10 - Ekolu", "Model 11 - Possan"), label_visibility="collapsed")
+    name = st.selectbox("Choose a Model:",("Model 01 - Häkkinen", "Model 02 - fib", "Model 03 - CECS", "Model 04 - Guiglia", "Model 05 - Silva", "Model 06 - Yang", "Model 07 - Hills", "Model 08 - Greve-Dierfeld", "Model 09 - Ta", "Model 10 - Ekolu", "Model 11 - Possan"), label_visibility="collapsed")
 
-    if sb == "Model 01 - Häkkinen":         # Häkkinen
+    if name == "Model 01 - Häkkinen":         # Häkkinen
         col1, col2  = st.columns([1,1])
-        name = "M01"
         with col1:
-            Exposed = st.radio(" ", ["Sheltered from rain", "Exposed to rain"])
-            f_c = st.number_input("mean compressive strength of the concrete at the age of 28 days (MPa):")
-            C = st.number_input("Clinker Content (kg/m³):")
+            exposed = st.radio("Choose location of the component:", ["Sheltered from rain", "Exposed to rain"])
+            f_c = st.number_input("Mean compressive strength of the concrete at the age of 28 days (MPa):", value=(25.0) , step=(0.5))
+            C = st.number_input("Clinker Content (kg/m³):", value=(200.0), step=(0.5))
 #        with col2:        
 #            st.radio("  ", ["Not air entrained", "Air entrained"])
         with col2:
-            FA = st.number_input("Fly ash (kg/m³):")
-            SF = st.number_input("Silicia fume (kg/m³):")
-            GGBS = st.number_input("Blast furnance slag (kg/m³):")
+            entrained = st.radio("Choose if component is air entrained:", ["Air entrained","Not air entrained"])
+            optional = st.radio("Choose optional mixture:", ["None","Fly ash", "Silicia fume", "Blast furnance slag"])
+            if optional == "None": FA = 0.0;  SF = 0.0; GGBS = 0.0
+            if optional == "Fly ash": FA = st.number_input("Fly ash (kg/m³):", help="recommended value 28%", step=(0.5)); SF = 0.0; GGBS = 0.0
+            if optional == "Silicia fume": SF = st.number_input("Silicia fume (kg/m³):", help="recommended value 9%", step=(0.5)); FA = 0.0; GGBS = 0.0
+            if optional == "Blast furnance slag": GGBS = st.number_input("Blast furnance slag (kg/m³):", help="recommended value 70%", step=(0.5)); FA = 0.0; SF = 0.0
         t = int(st.slider("Minimum lifetime (years): ", 1,100,50))
        
         if st.button("Calculate "): 
-            Modell01 = Häkkinen(name, C, f_c, Exposed, FA, SF, GGBS)
-            print("gut")
-            print(Exposed)
-            st.success("Carbonation depth: " + str(round(Modell01.x_c(t),1)) + " mm")
+            Modell01 = Häkkinen(name, C, f_c, exposed, entrained, FA, SF, GGBS)
+            Modell01.calculate(t)
             
-    elif sb == "Model 02 - fib":            # fib
+    elif name == "Model 02 - fib":            # fib
         st.subheader("leer")
     
-    elif sb == "Model 03 - CECS":           # CECS
+    elif name == "Model 03 - CECS":           # CECS
         st.subheader("Model 3")
-        name = "M03"
         col1, col2 = st.columns([1,1])
         with col1:
             tension = st.radio("Stress:", ["pressure", "tension"])
@@ -138,11 +67,9 @@ with tab3:              # Calculations
       
         if st.button("Calculate "): 
             Modell03 = CECS220(name, f_c, FA, tension, location, T, RH, CO2) 
-            st.success("Carbonation depth: " + str(round(Modell03.x_c(t),1)) + " mm")
-        
-    elif sb == "Model 04 - Guiglia":        # Guiglia
-        
-       name = "M04"
+            Modell03.calculate(t)
+            
+    elif name == "Model 04 - Guiglia":        # Guiglia
        col1, col2 = st.columns([1,1])
        with col1: 
            building = st.selectbox("Building type:", ("Tunnel","others"))
@@ -154,20 +81,10 @@ with tab3:              # Calculations
 
        if st.button("Calculate "): 
            Modell04 = Guiglia(name, fc, rh, building) #(name, C, f_c, phi_clinker, ExpC, RH, CO2))(name, 0.5, 25, 0.5, 0.5, rh, 0.05)
-           st.success("Carbonation depth: " + str(round(Modell04.x_c(t),1)) + " mm")
-           st.success("k =" + str(round(Modell04.karbo,2)) + " mm/year^0.5")
-           t_range = np.arange(0, t+1)
-           print(t_range)
-           x_clist = Modell04.x_cList(t)
-           df=pd.DataFrame(data=(x_clist), index=("Year %d" % i for i in range(t+1)), dtype=(str))#, columns=("Carbonation depth"))
-           a = st.dataframe(df, use_container_width=True)
+           Modell04.calculate(t)
+       
            
-           st.download_button("Download table", df.to_csv())
-           fig = ex.line(x_clist, title=("Model 04 - Guiglia")) #, x="time (years)", y="carbontion depth (mm)")
-           st.plotly_chart(fig, use_container_width=True)
-           
-    elif sb == "Model 05 - Silva":          # Silva
-        name = "M05"
+    elif name == "Model 05 - Silva":          # Silva
         col1, col2 = st.columns([1,1])
         with col1:
             rh = st.number_input("Relative humidity (%):", 1,100,50)    
@@ -180,31 +97,47 @@ with tab3:              # Calculations
        
         if st.button("Calculate "): 
             Modell05 = Silva(name, C, fc, ExpC, rh, CO2) #(name, C, f_c, phi_clinker, ExpC, RH, CO2))(name, 0.5, 25, 0.5, 0.5, rh, 0.05)
-            st.success("Carbonation depth: " + str(round(Modell05.x_c(t),1)) + " mm")
-            t_range = np.arange(0, t, 0.1)
-            fig1, ax1 = plt.subplots()
-            ax1.grid(True)
-            ax1.set(xlabel = "Time (years)", ylabel = "Carbonation depth (mm)", title = sb)
-            ax1.plot(t_range, Modell05.x_c(t_range))
-            #plt.xscale("log")
-            st.pyplot(fig1)    #oder: st.write(fig1)
+            Modell05.calculate(t)
             
-    elif sb == "Model 06 - Yang":           # Yang
+    elif name == "Model 06 - Yang":           # Yang
+        col1, col2 = st.columns([1,1])
+        with col1:
+            C = st.number_input("Cement content (kg/m³):",0.0,None,25.0,step=(0.5))
+            S = st.number_input("S ? (kg/m³):",0.0,None,25.0,step=(0.5))
+            G = st.number_input("G ? (kg/m³):",0.0,None,25.0,step=(0.5))
+            FA = st.number_input("Fly ash content (kg/m³):",0.0,None,25.0,step=(0.5))
+            GGBS = st.number_input("Ground granulated blast-furnace slag content (kg/m³):",0.0,None,25.0,step=(0.5))
+            SF = st.number_input("Silica fume content (kg/m³):",0.0,None,25.0,step=(0.5))
+
+        with col2:
+            RH = st.number_input("Relative humidity (%):", 1.0,100.0,50.0, step=0.5) 
+            wc = st.number_input("Water / Cement ratio (-):",0.0,None,0.5,step=(0.05))
+            C_co2 = st.number_input("CO2 (%):",0.0,None,25.0,step=(0.5))
+
+            Location = st.radio("Choose location of component:", ["Outdoor","Indoor"])
+            print(Location)
+            if Location=="Outdoor":     Finishing = st.radio("Choose Finishing of component:", ["Nothing", "Plaster", "Paint", "Mortar", "Mortar + Plaster", "Mortar + Paint", "Tile"])
+            elif Location=="Indoor":    Finishing = st.radio("Choose Finishing of component:", ["Nothing", "Paint", "Mortar", "Tile"])
+
+        t = st.slider("Minimum lifetime (years): ", 1,100,50)
+        
+        if st.button("Calculate "): 
+            Modell06 = Yang(name, t, C, S, G, FA, GGBS, SF, wc, RH, C_co2, Location, Finishing)
+            Modell06.calculate(t)
+        
+    elif name == "Model 07 - Hills":          # Hills
         st.subheader("leer")
         
-    elif sb == "Model 07 - Hills":          # Hills
+    elif name == "Model 08 - Greve-Dierfeld": # Geve-Dierfeld
         st.subheader("leer")
         
-    elif sb == "Model 08 - Greve-Dierfeld": # Geve-Dierfeld
+    elif name == "Model 09 - Ta":             # Ta
         st.subheader("leer")
         
-    elif sb == "Model 09 - Ta":             # Ta
-        st.subheader("leer")
-        
-    elif sb == "Model 10 - Ekolu":          # Ekolu
+    elif name == "Model 10 - Ekolu":          # Ekolu
         st.subheader("leer")
 
-    elif sb == "Model 11 - Possan":         # Possan
+    elif name == "Model 11 - Possan":         # Possan
         st.subheader("leer")
 
 with tab4:              # Exposure classes
@@ -225,3 +158,9 @@ with tab4:              # Exposure classes
 
 #    df = pd.DataFrame((("64","84"),("67","104"),("75","64")),index=("1","2","3"),columns=("relative humidity (%)","number of rainy days (-)"))
 #   st.table(df)
+#   t_range = np.arange(0, t+1)
+ #  print(t_range)
+  # x_clist = Modell04.x_cList(t)
+ #  df=pd.DataFrame(data=(x_clist), index=("Year %d" % i for i in range(t+1)), dtype=(str))#, columns=("Carbonation depth"))
+  # a = st.dataframe(df, use_container_width=True)
+  #st.download_button("Download table", df.to_csv())
