@@ -156,9 +156,9 @@ with tab4:              # Exposure classes
     col2.write("Cyclic wet and dry")
     
 
-#    df = pd.DataFrame((("64","84"),("67","104"),("75","64")),index=("1","2","3"),columns=("relative humidity (%)","number of rainy days (-)"))
-#   st.table(df)
-#   t_range = np.arange(0, t+1)
+ #    df = pd.DataFrame((("64","84"),("67","104"),("75","64")),index=("1","2","3"),columns=("relative humidity (%)","number of rainy days (-)"))
+ #   st.table(df)
+ #   t_range = np.arange(0, t+1)
  #  print(t_range)
  # x_clist = Modell04.x_cList(t)
  #  df=pd.DataFrame(data=(x_clist), index=("Year %d" % i for i in range(t+1)), dtype=(str))#, columns=("Carbonation depth"))
