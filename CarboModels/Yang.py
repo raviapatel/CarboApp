@@ -33,15 +33,15 @@ class Yang(CarboModel):
     G : float
         ?
     FA : float
-    
+        Fly ash content (?)
     GGBS : float
-    
+        Ground granulated blast furnace slag content (kg/m³)
     SF : float
-    
+        Silica fume content (kg/m³)
     wc : float
-    
-    RH :float
-    
+        Water / cement ratio (-)
+    RH : float
+         Relative humidity around concrete surface (%) 
     C_co2 : float
     
     Location : str

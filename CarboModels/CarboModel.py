@@ -5,10 +5,9 @@ Created on Wed Mar 17 16:05:10 2021
 @author: gf5901
 """
 import numpy as np
+import pandas as pd
 import plotly.express as pex
-import plotly.io as pio
 import streamlit as st
-#import math 
 
 class CarboModel:
     """
@@ -75,10 +74,11 @@ class CarboModel:
         t_range = np.arange(0,t+1)
         xc_list = self.x_cList(t)
         res = {"time [years]":t_range, "X(t) [mm]":xc_list}
+        #Table:
         st.dataframe(res, use_container_width=True)
-    #    np.savetxt("Test", res)
-    #    st.download_button("Download table", df.to_csv())
-    
+        res1=pd.DataFrame(res)
+        st.download_button(("Download table (European)"), res1.to_csv(sep=";", index=False, decimal=",", header=self.name), file_name=("CarbonationDepth.csv"))
+        #Chart:
         fig = pex.line(res, y="X(t) [mm]", x="time [years]", title=(self.name))
         st.plotly_chart(fig, use_container_width=True)
         

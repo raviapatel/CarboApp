@@ -12,10 +12,12 @@ Created on Fri Mar 19 08:18:38 2021
 @author: gf5901
 """
 
+from dataclasses import dataclass
 from CarboModels.CarboModel import CarboModel 
 import math
 import numpy as np
     
+@dataclass
 class fibGreveDierfeld(CarboModel):
     """
     This is the carbonation model according to fib.2006 where the k_NAC from carboantion resistance class GreveDierfeld.2016d
@@ -31,29 +33,42 @@ class fibGreveDierfeld(CarboModel):
         PZ (kg/m^3) puzzolan
         wb (-) water binder radio
         RH(%) 
-        ToW(days) ime of wettness, days/year with rain > x(mm)
-        p_sr(-) probabiloty of driving rain
+        ToW(days) time of wettness, days/year with rain > x(mm)
+        p_sr(-) probability of driving rain
         t_c(days) curing time
         C_co2[-] !!!! in Gereve-Dierfeld.2016a [kg/m^3], but C_a is only given in [Vol%]
     """
     color="olive"
     
-    def __init__(self, name, CEM,  C, FA, SF, GGBS, L, PZ, wb, RH, ToW, p_sr, t_c, CO2):
-        self.name =name
-        self.RH= RH 
-        self.ToW=ToW
-        self.p_sr= p_sr
-        self.t_c= t_c 
+    name:str 
+    RH:float 
+    CEM:str 
+    C:float 
+    FA:float 
+    SF:float 
+    GGBS:float 
+    L:float 
+    PZ:float 
+    wb:float 
+    CO2:float
+    ToW:float 
+    p_sr:float 
+    t_c:float 
+    
+    def __post_init__(self):
         
         
         #RH in (%)
-        k_e= ((1-(RH/100)**5)/(1-0.65**6))**2.5
+        self.k_e= ((1-(self.RH/100)**5)/(1-0.65**6))**2.5
         
         #t_c in (days)
-        k_c =(t_c/7)**(-0.567)
+        self.k_c =(self.t_c/7)**(-0.567)
+        
+        CEM=self.CEM
+        wb=self.wb
         
         if CEM == '?':
-            CEM= findCEM(C, FA, SF, GGBS, L, PZ)
+            CEM = self.findCEM(self.C, self.FA, self.SF, self.GGBS, self.L, self.PZ)
         
         #k_NAC from Tab 7 in GreveDierfeld.2016d -> wb value upper boundary, k_NAc conservativ
         
@@ -98,11 +113,13 @@ class fibGreveDierfeld(CarboModel):
         else:
             k_NAC=np.nan
             
-        self.k_a=CO2/(0.04/100)       #k_a[-] GreveDierfeld.2016a Eq 3b 0.04 [Vol%]/// GreveDierfeld.2016 Eq.31 k_a=1.1
+        self.k_NAC=k_NAC
+        
+        self.k_a=self.CO2/(0.04/100)       #k_a[-] GreveDierfeld.2016a Eq 3b 0.04 [Vol%]/// GreveDierfeld.2016 Eq.31 k_a=1.1
         #print("k_a",k_a)
         #print("k_NAC", k_NAC)
         #C_co2 in [kg/m³], t in [year]
-        self.karbo = k_NAC*math.sqrt(k_e*k_c*self.k_a) 
+        self.karbo = self.k_NAC*math.sqrt(self.k_e*self.k_c*self.k_a) 
 
     def __repr__(self):
         return "fib MC SLD and GreveDierfeld.2016d"

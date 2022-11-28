@@ -9,9 +9,9 @@ class overwiew:
         st.latex("X(t)=k*\sqrt{t}")
         col1, col2 = st.columns([1,3])
         col1.latex("\small k:")
-        col2.latex("\small describes \, the \, carbonation \, rate \, ({{mm} \over {years^{0.5}}})")
+        col2.latex("\small \sf describes \, the \, carbonation \, rate \, ({{mm} \over {years^{0.5}}})")
         col1.latex("\small t:")
-        col2.latex("\small time \, (years)")
+        col2.latex("\small \sf time \, (years)")
         
         st.subheader("Model 01: Häkkinen (1993)")
         st.latex("k=c_{env}*c_{air}*a*f_{cm,28}^b")

@@ -6,11 +6,13 @@ Created on Fri Mar 19 16:53:02 2021
 """
 
 from CarboModels.CarboModel import CarboModel 
+from dataclasses import dataclass
 import math
     
+@dataclass
 class Hills_fc(CarboModel):
     """
-    This is the carbonation model according 
+    This is the carbonation model according Hills.2015 
     k=konst=karbo
     Variables:
         name= Name of cenario
@@ -18,49 +20,68 @@ class Hills_fc(CarboModel):
         C [kg/m^3 or %]
         GGBS [kg/m^3 or %]
         FA [kg/m^3 or %]
-        Exposed [bool]
+        ExCo [bool]
         Sheltered  [bool]
-        Indoores [bool]
+        Indoors [bool]
+           
+    attributes
+    ----------
+    name : str
+        Name of the Model
+    C : float
+        Clinker content (kg/m³)
+    f_c : float
+        28-day compressive strenght (MPa)
+    ExpC : str
+        Exposure class (XC1-XC4)
+    RH : int
+        Relative humidity (%)
+    CO2 : float
+        CO2 content (%)
+    
+    Methods
+    -------
+        Calculates self.karbo (mm/year^0.5)
+    
 
     """
     color="purple"
     
-    def __init__(self, name,  f_c, C, GGBS,FA, Exposed, Sheltered, Indoors):
-
-        self.name =name
+    name:str
+    GGBS:float 
+    FA:float 
+    C:float 
+    ExCo:str 
+    f_c:float
     
-        I_GGBS=0
-        I_PFA=0
-        I_cemI=0
-        I_Exposed=0
-        I_sheltered=0
-        I_indoors=0
+    def __post_init__(self):
         
-        if GGBS>0 and FA==0:
-            I_GGBS=1
-        elif FA>0 and GGBS==0:
-            I_PFA=1
-        elif C>0 and FA==0 and GGBS==0:
-            I_cemI=1
+        self.I_GGBS=0
+        self.I_FA=0
+        self.I_C=0
+        
+        if self.GGBS>0 and self.FA==0:
+            self.I_GGBS=1
+        elif self.FA>0 and self.GGBS==0:
+            self.I_FA=1
+        elif self.C>0 and self.FA==0 and self.GGBS==0:
+            self.I_C=1
         else:
             print('Error concrete mix not defined')
-            self.karbo=float('NaN')
             return
             
-        if Exposed==True and Sheltered ==False and Indoors==False:
-            I_Exposed=1
-        elif Sheltered == True and Exposed==False and Indoors==False:
-            I_sheltered=1
-        elif Indoors==True and Sheltered == False and Exposed==False:
-            I_indoors=1
-        else:
-            print('Error: Exposure conditions not defined')
-            self.karbo=float('NaN')
-            return
-            
+        self.I_Exposed=0
+        self.I_Sheltered=0
+        self.I_Indoors=0
         
-        lnK=1.066+1.761*I_cemI+2.062*I_GGBS+2.061*I_PFA-0.639*I_Exposed -0.182*I_sheltered-0.648*I_indoors+(0.025-0.053*I_cemI-0.052*I_GGBS-0.05*I_PFA)*f_c
-        self.karbo= math.exp(lnK)
+        if self.ExCo=="Exposed":         #==True and self.Sheltered ==False and self.Indoors==False:
+            self.I_Exposed=1
+        elif self.ExCo=="Sheltered":       #== True and self.ExCo==False and self.Indoors==False:
+            self.I_Sheltered=1
+        elif self.ExCo=="Indoors":            #==True and self.Sheltered == False and self.ExCo==False:
+            self.I_Indoors=1
+            
+        self.karbo = math.exp(1.066+1.761*self.I_C+2.062*self.I_GGBS+2.061*self.I_FA-0.639*self.I_Exposed -0.182*self.I_Sheltered-0.648*self.I_Indoors+(0.025-0.053*self.I_C-0.052*self.I_GGBS-0.05*self.I_FA)*self.f_c)
         
     def __repr__(self):
         return("Hills.2015 f_c")

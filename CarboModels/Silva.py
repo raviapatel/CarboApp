@@ -22,7 +22,7 @@ class Silva(CarboModel):
         28-day compressive strenght (MPa)
     ExpC : str
         Exposure class (XC1-XC4)
-    RH : int
+    RH : float
         Relative humidity (%)
     CO2 : float
         CO2 content (%)
