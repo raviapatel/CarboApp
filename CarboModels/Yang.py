@@ -6,6 +6,7 @@ Created on Fri Mar 19 14:55:34 2021
 """
 from dataclasses import dataclass
 from CarboModels.CarboModel import CarboModel 
+import streamlit as st
 import math
     
 @dataclass
@@ -29,9 +30,9 @@ class Yang(CarboModel):
     C : float
         Cement content (kg/m³)
     S : float
-        ?
+        Sand content (kg/m³)
     G : float
-        ?
+        Gravel content (kg/m³)
     FA : float
         Fly ash content (?)
     GGBS : float
@@ -123,13 +124,13 @@ class Yang(CarboModel):
         elif self.SF/(self.C+self.FA+self.GGBS+self.SF)<0.2 and self.FA==0 and self.GGBS==0:
             b_s=1.1
         else:
-            print("error b_s: Substitution of SCMs not definded in Tab 1")
-            b_s = input("Please enter an float for b_s:\n")
-            b_s= float(b_s)
-            print('You entered', b_s)
-        self.b_s=b_s
+            st.warning("Calculation could not be executed! Mixture design not included in the model!")
+            self.karbo = 0
+            b_s = 0
+            
+        self.b_s = b_s
         
-        self.karbo = math.sqrt(2*self.D(self.t) * self.C_co2 *365 / self.a(self.t)  )*10 
+        self.karbo = math.sqrt(2*self.D(self.t) * self.C_co2 *365 / self.a(self.t))*10 
 
     def __repr__(self):
         return("Yang.2014")

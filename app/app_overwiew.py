@@ -1,6 +1,6 @@
 import streamlit as st
     
-class overwiew:
+class app_overwiew:
     
     def __init__(self):
         st.header("Overview of Models")

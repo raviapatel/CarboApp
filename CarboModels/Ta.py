@@ -5,9 +5,11 @@ Created on Mon Mar 22 08:07:57 2021
 @author: gf5901
 """
 
+from dataclasses import dataclass
 from CarboModels.CarboModel import CarboModel 
 import math
     
+@dataclass
 class Ta(CarboModel):
     """
     This is the carbonation model according to Ta.2016
@@ -28,9 +30,31 @@ class Ta(CarboModel):
     """
     color="green"
     
-    def __init__(self, name, C, p_c, wc, FA, p_FA, S, G, W, p_w, CaO, SO3, SiO2, Al2O3, Fe2O3, phi_clinker, S_max, f_cem, t_c, RH, T, CO2):
-        self.name =name
-        self.karbo =0
+    name:str 
+    C:float 
+    p_c:float 
+    wc:float 
+    FA:float 
+    p_FA:float 
+    S:float 
+    G:float 
+    W:float 
+    p_w:float 
+    CaO:float 
+    SO3:float 
+    SiO2:float 
+    Al2O3:float 
+    Fe2O3:float 
+    phi_clinker:float 
+    S_max:float 
+    f_cem:float 
+    t_c:float  
+    RH:float 
+    T:float  
+    CO2:float
+    
+    def __post_init__(self):
+        self.karbo = 0
 
         M_co= 44.01          #MCO2 and MCaO (g/mol) are the molar weight of CO2 and CaO respectively
         M_CaO= 56.0774       #(g/mol)

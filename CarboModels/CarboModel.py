@@ -67,6 +67,19 @@ class CarboModel:
         return x_c
     
     def calculate(self, t):
+        """
+        
+
+        Parameters
+        ----------
+        t : float
+            time (years)
+
+        Methods
+        -------
+        Shows carbonation depth, k-factor, table and chart of calculated carbonation depths (with download options)
+
+        """
         
         st.success("Carbonation depth: " + str(round(self.x_c(t),1)) + " mm")
         st.success("k =" + str(round(self.karbo,2)) + " mm/year^0.5")
@@ -77,7 +90,7 @@ class CarboModel:
         #Table:
         st.dataframe(res, use_container_width=True)
         res1=pd.DataFrame(res)
-        st.download_button(("Download table (European)"), res1.to_csv(sep=";", index=False, decimal=",", header=self.name), file_name=("CarbonationDepth.csv"))
+        st.download_button(("Download table"), res1.to_csv(sep=",", index=False, decimal=".", header=self.name), file_name=("CarbonationDepth.csv"))
         #Chart:
         fig = pex.line(res, y="X(t) [mm]", x="time [years]", title=(self.name))
         st.plotly_chart(fig, use_container_width=True)

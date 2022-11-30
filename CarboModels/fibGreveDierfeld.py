@@ -34,7 +34,7 @@ class fibGreveDierfeld(CarboModel):
         wb (-) water binder radio
         RH(%) 
         ToW(days) time of wettness, days/year with rain > x(mm)
-        p_sr(-) probability of driving rain
+        p_dr(-) probability of driving rain
         t_c(days) curing time
         C_co2[-] !!!! in Gereve-Dierfeld.2016a [kg/m^3], but C_a is only given in [Vol%]
     """
@@ -52,7 +52,7 @@ class fibGreveDierfeld(CarboModel):
     wb:float 
     CO2:float
     ToW:float 
-    p_sr:float 
+    p_dr:float 
     t_c:float 
     
     def __post_init__(self):
@@ -124,7 +124,7 @@ class fibGreveDierfeld(CarboModel):
     def __repr__(self):
         return "fib MC SLD and GreveDierfeld.2016d"
     
-    def findCEM(self, C, FA, SF, GGBS, L=0, PZ=0):
+    def findCEM(self, C, FA, SF, GGBS, L, PZ):
         """
         Function defines Cement according DIN 197.1 Tab. 1 with the SCMs from mixdesign
         -> in HuyVu C ='CEM I' and SCMs are added
@@ -179,8 +179,8 @@ class fibGreveDierfeld(CarboModel):
         return self.karbo*self.W(t)
     
     def W(self, t):
-        #p_sr= probability of driving rain [-], t in year
-        return (0.0767/t)**((self.p_sr*self.ToW/365)**0.446/2)
+        #p_dr= probability of driving rain [-], t in year
+        return (0.0767/t)**((self.p_dr*self.ToW/365)**0.446/2)
 
 
        

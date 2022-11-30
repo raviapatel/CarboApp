@@ -23,11 +23,7 @@ class Hills_time(CarboModel):
     ----------
     name : str
         Name of the Model
-    GGBS : 
-        
-    FA : 
-        
-    C : 
+    mixture : str
         
     ExCo : str
         Exposure condition ('Exposed','Sheltered','Indoors','Other')
@@ -45,9 +41,7 @@ class Hills_time(CarboModel):
     color="brown"
     
     name:str 
-    GGBS:float 
-    FA:float 
-    C:float 
+    mixture:str
     ExCo:str 
     origin:str 
     age:float 
@@ -58,15 +52,12 @@ class Hills_time(CarboModel):
         self.I_FA=0
         self.I_C=0
         
-        if self.GGBS>0 and self.FA==0:
-            self.I_GGBS=1
-        elif self.FA>0 and self.GGBS==0:
-            self.I_FA=1
-        elif self.C>0 and self.FA==0 and self.GGBS==0:
+        if self.mixture=="ordinary portland cement (OPC)":
             self.I_C=1
-        else:
-            print('Error concrete mix not defined')
-            return
+        elif self.mixture=="OPC + blast furnace slag":
+            self.I_GGBS=1
+        elif self.mixture=="OPC + fly ash":
+            self.I_FA=1
             
         self.I_Exposed=0
         self.I_Sheltered=0

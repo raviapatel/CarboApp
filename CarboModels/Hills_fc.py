@@ -28,8 +28,8 @@ class Hills_fc(CarboModel):
     ----------
     name : str
         Name of the Model
-    C : float
-        Clinker content (kg/m³)
+    mixture : str
+        content of concrete ('ordinary portland cement (OPC)','OPC + blast furnace slag','OPC + fly ash')
     f_c : float
         28-day compressive strenght (MPa)
     ExpC : str
@@ -48,9 +48,7 @@ class Hills_fc(CarboModel):
     color="purple"
     
     name:str
-    GGBS:float 
-    FA:float 
-    C:float 
+    mixture:str
     ExCo:str 
     f_c:float
     
@@ -60,15 +58,12 @@ class Hills_fc(CarboModel):
         self.I_FA=0
         self.I_C=0
         
-        if self.GGBS>0 and self.FA==0:
-            self.I_GGBS=1
-        elif self.FA>0 and self.GGBS==0:
-            self.I_FA=1
-        elif self.C>0 and self.FA==0 and self.GGBS==0:
+        if self.mixture=="ordinary portland cement (OPC)":
             self.I_C=1
-        else:
-            print('Error concrete mix not defined')
-            return
+        elif self.mixture=="OPC + blast furnace slag":
+            self.I_GGBS=1
+        elif self.mixture=="OPC + fly ash":
+            self.I_FA=1
             
         self.I_Exposed=0
         self.I_Sheltered=0
