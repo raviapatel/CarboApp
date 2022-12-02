@@ -61,9 +61,7 @@ class Häkkinen(CarboModel):
             self.c_env = 0.5
         elif self.exposed == "Sheltered from rain":
             self.c_env = 1.0   
-        else:
-            print('Error: exposure')
-            return
+            
         
         if self.entrained == "Air entrained":
             self.c_air = 0.7
@@ -85,11 +83,6 @@ class Häkkinen(CarboModel):
             #print('recommended value GGBS=70%, here:', GGBS/(C+FA+SF+GGBS)*100)
             self.a=360
             self.b=-1.2
-        else:
-            print('Error: mixture')
-            st.error("Error: Mixture")
-            self.karbo=float('NaN')
-            return
         
         self.karbo = self.c_env*self.c_air*self.a*self.f_c**self.b
     

@@ -27,6 +27,58 @@ class Ta(CarboModel):
          RH[%] 
          T[°C] 
          CO2 [-]
+         
+    attributes
+    ----------
+    name : str
+        Name of the Model
+    C : float 
+        Cement content (kg/m³)
+    FA : float 
+        Fly ash content (kg/m³)
+    p_w : float 
+        Density of water (kg/m³)
+    p_c : float
+        Density of cement (kg/m³)
+    p_FA : float 
+        Density of fly ash (kg/m³)
+    wc : float 
+        Water / cement ratio (-)
+    S : float 
+        Sand content (kg/m³)
+    G : float 
+        Gravel content (kg/m³)
+    W : float 
+        Water content (kg/m³)
+    CaO : float 
+        Amount of calcium oxide per weight of cement (-)
+    SO3 : float 
+        Amount of sulfur oxide per weight of cement (-)
+    SiO2 : float 
+        Amount of silicon oxide per weight of cement (-)
+    Al2O3 : float 
+        Amount of aluminium oxide per weight of cement (-)
+    Fe2O3 : float 
+        Amount of iron oxide per weight of cement (-)
+    phi_clinker : float 
+        cement clinker content (-)
+    S_max : float 
+        Maximum aggregate size (mm)
+    f_cem : float 
+        ?
+    t_c : float  
+        Curing period (days)
+    RH : float 
+        Relative humidity (%)
+    T : float  
+        Temperature (°C)
+    CO2 : float
+        CO2 concentration (-)
+        
+    Methods
+    -------
+        Calculates self.karbo (mm/year^0.5)
+
     """
     color="green"
     
@@ -56,11 +108,11 @@ class Ta(CarboModel):
     def __post_init__(self):
         self.karbo = 0
 
-        M_co= 44.01          #MCO2 and MCaO (g/mol) are the molar weight of CO2 and CaO respectively
+        M_co= 44.01          #MCO2 and MCaO (g/mol) are the molar weight of CO2 and self.CaO respectively
         M_CaO= 56.0774       #(g/mol)
-        #phi_clinker in [-], C in [kg/m³ Beton], CaO in [-] 
-        self.a=0.75* phi_clinker *C* CaO * M_co/M_CaO       #[kg/m^3] the amount of CO2 absorbed per volume of completely carbonated concrete
-        S_max= float(S_max)      
+        #phi_clinker in [-], C in [kg/m³ Beton], self.CaO in [-] 
+        self.a=0.75* self.phi_clinker *self.C* self.CaO * M_co/M_CaO  #Formel (5)     #[kg/m^3] the amount of CO2 absorbed per volume of completely carbonated concrete
+        S_max= float(self.S_max)      
 
         #S_max in [mm]
         if 8<= S_max < 16:
@@ -72,32 +124,32 @@ class Ta(CarboModel):
             self.karbo= float('NaN')
             return
         
-        f_c= (7.84*f_cem)/(1+wc*p_c/p_w+po_air*p_c/C)**2 #[]????
+        f_c= (7.84*self.f_cem)/(1+self.wc*self.p_c/self.p_w+po_air*self.p_c/self.C)**2 # Fig.2 (54) #[]????
         
-        D_co28=10**(-7)*10**(-0.025*f_c)                 #[]???
-        RH=RH/100            #[-]
-        f_RH = (1-RH)**2 *RH**(2.6)                      #RH in [-] ???
+        D_co28=10**(-7)*10**(-0.025*f_c)       #Fig.2 (25)         #[]???
+        RH=self.RH/100            #[-]
+        f_RH = (1-RH)**2 *RH**(2.6)            #Fig.2 (12)          #RH in [-] ???
         
     
-        f_T = math.exp((4700*((T+273.15)-293))/(293*(T+273.15)))      #Arrhenius’ law: T in [C] wird in [K] umgewandelt
-        f_SGC = ((S+G)/C)**(0.1)                        #[-] with S,G,C in [kg/m³ Beton]
+        f_T = math.exp((4700*((self.T+273.15)-293))/(293*(self.T+273.15)))   #Fig.2 (20)   #Arrhenius’ law: T in [C] wird in [K] umgewandelt
+        f_SGC = ((self.S+self.G)/self.C)**(0.1)      #Fig.2 [11]                  #[-] with S,G,C in [kg/m³ Beton]
         
         
-        po= po_air + W/p_w - (0.249*(CaO-0.7* SO3) +0.191*SiO2 +1.118*Al2O3 - 0.357*Fe2O3)*C/1000     #po_carbon (n.u.) is the carbonated concrete porosity
-        if 0.5< wc<0.8:
+        po= po_air + self.W/self.p_w - (0.249*(self.CaO-0.7* self.SO3) +0.191*self.SiO2 +1.118*self.Al2O3 - 0.357*self.Fe2O3)*self.C/1000     #po_carbon (n.u.) is the carbonated concrete porosity
+        if 0.5< self.wc<0.8:
             n=1.8       #n (n.u.) is an empirical constant: n = 1.8 for 0.5 < W/C < 0.8. 
         else:
             print("wc error: empirical constant n not defined")
-            self.karbo= float('NaN')
+            self.karbo = float('NaN')
             return
-        f_wc= 2437.7* math.exp(-5.592*wc)
-        f_PwcFA = f_wc *( ( (0.93-3.95*0.94**(100*wc))*po -po_air ) / (W/p_w + C/p_c +FA/p_FA)  )**(n)
+        f_wc= 2437.7* math.exp(-5.592*self.wc)
+        f_PwcFA = f_wc *( ( (0.93-3.95*0.94**(100*self.wc))*po -po_air ) / (self.W/self.p_w + self.C/self.p_c +self.FA/self.p_FA)  )**(n)
         
-        f_tc= (1.9*10**(-2))/(10**(-0.025*f_c)) +(1- (1.9*10**(-2))/(10**(-0.025*f_c)))*math.sqrt(28/(0.01*t_c))
+        f_tc= (1.9*10**(-2))/(10**(-0.025*f_c)) +(1- (1.9*10**(-2))/(10**(-0.025*f_c)))*math.sqrt(28/(0.01*self.t_c))
         
         #print(D_co28,f_RH, f_T,f_SGC,f_PwcFA,f_tc)
         self.D=D_co28 *f_RH * f_T * f_SGC *f_PwcFA *f_tc *365*24*60*60  #[m^2/year]=[m^2/s]**365*24*60*60 
-        self.karbo = math.sqrt(2*self.D*CO2/self.a) * 1000 #[mm/year^0.5]
+        self.karbo = math.sqrt(2*self.D*self.CO2/self.a) * 1000 #[mm/year^0.5]
         
     def __repr__(self):
         return("Ta.2016")

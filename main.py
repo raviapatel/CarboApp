@@ -17,7 +17,7 @@ from app.app_Possan import app_Possan
 st.set_page_config(page_title="Carbonation Depth", page_icon=None, layout="centered", initial_sidebar_state="auto", menu_items=None)
 st.title("Calculation of Carbonation Depth")
 
-tab1, tab2, tab3, tab4 = st.tabs(["Home","Overview","Calculations","Exposure classes"])
+tab1, tab2, tab3, tab4 = st.tabs(["Home","Overview","Calculations","Compare"])
 
 with tab1:              # Homepage
    st. header("Welcome")
@@ -27,7 +27,7 @@ with tab2:              # Overview of the Models
   
     
 with tab3:              # Calculations
-    st.header("Choose a Model:")
+    st.subheader("Choose a Model:")
     name = st.selectbox("Choose a Model:",("Model 01 - Häkkinen", "Model 02 - fib", "Model 03 - CECS", "Model 04 - Guiglia", "Model 05 - Silva", "Model 06 - Yang", "Model 07 - Hills", "Model 08 - Greve-Dierfeld", "Model 09 - Ta", "Model 10 - Ekolu", "Model 11 - Possan"), label_visibility="collapsed")
 
     if name == "Model 01 - Häkkinen":         # Häkkinen
@@ -55,29 +55,20 @@ with tab3:              # Calculations
         app_fibGreveDierfeld(name)    
     
     elif name == "Model 09 - Ta":             # Ta - leer
-        st.subheader("leer")
+       app_Ta(name)
         
     elif name == "Model 10 - Ekolu":          # Ekolu - leer
-        st.subheader("leer")
+        app_Ekolu(name)
 
     elif name == "Model 11 - Possan":         # Possan - leer
-        st.subheader("leer")
+       app_Possan(name)
 
-with tab4:              # Exposure classes
-    st.header("Exposure classes:")
-    col1, col2 = st.columns([1,3])
-    col1.write("XC1")
-    col2.write("Dry or permanently wet")
-    col1, col2 = st.columns([1,3])
-    col1.write("XC2")
-    col2.write("Wet, rarely dry")
-    col1, col2 = st.columns([1,3])
-    col1.write("XC3")
-    col2.write("Moderate humidity")
-    col1, col2 = st.columns([1,3])
-    col1.write("XC4")
-    col2.write("Cyclic wet and dry")
+
+with tab4:              # Compare
+    st.subheader("Choose Models to Compare:")
+    compare = st.multiselect("Choose Models:", ("Model 01 - Häkkinen", "Model 02 - fib", "Model 03 - CECS", "Model 04 - Guiglia", "Model 05 - Silva", "Model 06 - Yang", "Model 07 - Hills", "Model 08 - Greve-Dierfeld", "Model 09 - Ta", "Model 10 - Ekolu", "Model 11 - Possan"), label_visibility="collapsed")
     
+            
 
  #    df = pd.DataFrame((("64","84"),("67","104"),("75","64")),index=("1","2","3"),columns=("relative humidity (%)","number of rainy days (-)"))
  #   st.table(df)

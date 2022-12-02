@@ -137,9 +137,9 @@ class Yang(CarboModel):
        
     def D(self,t):
         b_h=(1-self.RH/100)**(0.6)  
-        print(self.wc)                    # βh represents the effect of relative humidity (RH) on the CO2 diffusion rate
+                  # βh represents the effect of relative humidity (RH) on the CO2 diffusion rate
         e_pu = 1.5 * self.wc**2
-        print(e_pu)
+  
         e_p=(0.1+2.62*self.wc**(4.2)*t*365)/(t*365*e_pu)
         D_co= 136.36*self.b_s* self.b_f* b_h *((self.S+self.G)/self.C)**(0.1) *(e_p)**2 #[cm^2/day]
         return D_co

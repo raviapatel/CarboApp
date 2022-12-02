@@ -47,19 +47,15 @@ class Silva(CarboModel):
             if  self.ExpC=='XC1':  X=1
             elif  self.ExpC=='XC3':  X=2
             elif  self.ExpC=='XC4':  X=3
-            else:
-                print('Error: exposure class')
-                return
+
             
             #CO2 in [%], f_c in [MPa] 
             k_d=0.556*self.CO2-3.602*X-0.148*self.f_c+18.734 #[mm/year]
             self.karbo = k_d
-            print("Kd: " + str(k_d))
         else:
             # CO2 in [%], f_c in [MPa]
             k_w=3.355*self.CO2-0.019*self.C-0.042*self.f_c+10.83 #[mm/year]    
             self.karbo = k_w
-            print("Kw: " + str(k_w))
 
     def __repr__(self):
         return("Silva.2014")

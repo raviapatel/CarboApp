@@ -16,8 +16,8 @@ class app_Yang():
     def __post_init__(self):
         col1, col2 = st.columns([1,1])
         with col1:
-            C = st.number_input("Cement content: (kg/m³)",0.0,None,250.0,step=(0.5))
-            S = st.number_input("Sand content: (kg/m³)",0.0,None,1000.0,step=(10.0))
+            C = st.number_input("Cement content: (kg/m³)",0.0,None,300.0,step=(0.5))
+            S = st.number_input("Sand content: (kg/m³)",0.0,None,400.0,step=(10.0))
             G = st.number_input("Gravel content: (kg/m³)",0.0,None,1000.0,step=(10.0))
             FA = st.number_input("Fly ash content: (kg/m³)",0.0,None,0.0,step=(0.5))
             GGBS = st.number_input("Ground granulated blast furnace slag content: (kg/m³)",0.0,None,0.0,step=(0.5))
@@ -25,7 +25,7 @@ class app_Yang():
 
         with col2:
             RH = st.number_input("Relative humidity: (%)", 1.0,100.0,50.0, step=0.5) 
-            wc = st.number_input("Water / cement ratio: (-)",0.0,None,0.5,step=(0.05))
+            wc = st.number_input("Water / cement ratio: (-)",0.0,None,0.6,step=(0.05))
             C_co2 = st.number_input("CO2 density around concrete surface: (%)",0.0,None,0.040,step=(0.005))
 
             Location = st.radio("Choose location of component:", ["Outdoor","Indoor"])

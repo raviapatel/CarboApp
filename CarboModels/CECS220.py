@@ -52,7 +52,6 @@ class CECS220(CarboModel):
         self.RH=self.RH/100
         self.k_CO=math.sqrt(self.CO2/0.03)
         self.k_kt=1.2
-        print("k_CO: " + str(self.k_CO))
         
         if self.stress=="stress":
             self.k_ks=1.1
@@ -65,7 +64,6 @@ class CECS220(CarboModel):
                 self.k_kl=1.0
                 
         self.k_F=1+13.34*(self.FA)**(3.3)   #FA is the fly ash content (weight ratio).
-        print("k_F: " + str(self.k_F))
                                             #f_c in [MPa]?, CO2 [?]=density around concrete surface
         self.karbo=3*self.k_CO*self.k_kl*self.k_kt*self.k_ks*self.k_F*self.T**(1/4)*self.RH**(1.5)*(1-self.RH)*(58/self.f_c-0.76) #*math.sqrt(365)
 

@@ -32,7 +32,6 @@ class Hills_time(CarboModel):
     age : float
         Age of concrete (years)
         
-    
     Methods
     -------
         Calculates self.karbo (mm/year^0.5)
