@@ -43,7 +43,7 @@ class CarboModel:
         x_c(mm) : TYPE
             cabonation depth
         """
-        x_c = self.karbo * t**0.5
+        x_c = self.k(t) * t**0.5
         return x_c
     
     def x_cList(self, t):
@@ -62,7 +62,7 @@ class CarboModel:
         """
         t = int(t)
         x_c = []
-        for i in range(0,t+1):
+        for i in range(1,t+1):
             x_c.append(round(self.k(i)* i**0.5, 2))
         return x_c
     
@@ -82,9 +82,9 @@ class CarboModel:
         """
         
         st.success("Carbonation depth: " + str(round(self.x_c(t),1)) + " mm")
-        st.success("k =" + str(round(self.karbo,2)) + " mm/year^0.5")
+        st.success("k =" + str(round(self.k(t),2)) + " mm/year^0.5")
         
-        t_range = np.arange(0,t+1)
+        t_range = np.arange(1,t+1)
         xc_list = self.x_cList(t)
         res = {"time [years]":t_range, "X(t) [mm]":xc_list}
         #Table:

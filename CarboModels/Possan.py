@@ -4,9 +4,11 @@ Created on Wed Mar 17 16:42:45 2021
 
 @author: gf5901
 """
+from dataclasses import dataclass
 from CarboModels.CarboModel import CarboModel  
 import math
     
+@dataclass
 class Possan(CarboModel):
     """
     This is the carbonation model according to Possan.2021
@@ -27,46 +29,75 @@ class Possan(CarboModel):
     CO2 (-) =density around concrete surface
     RH (%)
     
+    attributes
+    ----------
+    name : str
+        Name of the Model
+    C : float 
+    
+    FA : float 
+    
+    SF : float 
+    
+    CEM : str 
+    
+    f_c : float 
+    
+    ExCo : str
+        Exposure condition ('Exposed','Sheltered','Indoors')
+    CO2 : float  
+    
+    RH : float
+    
+    
+    Methods
+    -------
+        Calculates self.karbo (mm/year^0.5)
+    
     """
     color="blue"
     
-    def __init__(self, name, C, FA, SF, GGBS, LS, PZ, CEM, f_c,Exposed,Sheltered,Indoors, CO2, RH):
+    name:str 
+    C:float 
+    FA:float 
+    SF:float 
+    CEM:str 
+    f_c:float 
+    ExCo:str 
+    CO2:float  
+    RH:float
+    
+    def __post_init__(self):
 
-        self.name =name
-        self.C =C
-        self.FA=FA
-        self.SF =SF
-        self.CEM=CEM
-        self.f_c=f_c
-        self.Exposed =Exposed
-        self.Sheltered= Sheltered
-        self.Indoors = Indoors
-        self.CO2 = CO2*100 #(%)
-        self.RH = RH/100   #(-)
+       
+        self.CO2 = self.CO2*100 #(%)
+        self.RH = self.RH/100   #(-)
         
         #for HuyVu:
-        if CEM == '?':    
-            self.CEM= self.findCEM(C, FA, SF, GGBS, LS, PZ)
+        if self.CEM == '?':    
+            self.CEM= self.findCEM(self.C, self.FA, self.SF, self.GGBS, self.LS, self.PZ)
             print('cement type defined as:', self.CEM)
 
-        RH=RH/100 #[-]
-        CO2=CO2*100 #[%]
+        self.RH=self.RH/100 #[-]
+        self.CO2=self.CO2*100 #[%]
     
-        if Exposed==True and Sheltered==False and Indoors==False:
+        #Table 3b
+        if self.ExCo == "Exposed":
             k_ce=0.65
             
-        elif Exposed==False and Sheltered==True and Indoors==False:
+        elif self.ExCo == "Sheltered":
             k_ce=1
             
-        elif Exposed==False and Sheltered==False and Indoors==True:
+        elif self.ExCo == "Indoors":
             k_ce=1.3
         else:
             print('Error: Exposure not defined')
             return
     
-        ad= (FA+SF)/C *100 # puzzolanic addition content related to cement mass in [%] 
+        ad= (self.FA+self.SF)/self.C *100 # puzzolanic addition content related to cement mass in [%] 
         
-        if self.CEM=='CEM I':
+        #Table 3a
+        if self.CEM=='CEM I': #CEM IV/A, CEM IV/B
             k_c=19.8
             k_fc=1.7
             k_ad=0.24
@@ -113,8 +144,8 @@ class Possan(CarboModel):
             return
     
         #t [year], f_c[MPa], CO2[%], RH[-]
-        eq1=( k_ad*ad**(3/2)/(40+f_c) )+( k_CO2*CO2**(0.5) /(60+f_c) )-(k_UR*(RH-0.58)**2 / (100+f_c) ) 
-        self.karbo = k_c *(20/f_c)**(k_fc) * math.exp(eq1)*k_ce      
+        eq1=( k_ad*ad**(3/2)/(40+self.f_c) )+( k_CO2*self.CO2**(0.5) /(60+self.f_c) )-(k_UR*(self.RH-0.58)**2 / (100+self.f_c) ) 
+        self.karbo = k_c *(20/self.f_c)**(k_fc) * math.exp(eq1)*k_ce      
         
         
     def __repr__(self):
@@ -168,8 +199,6 @@ class Possan(CarboModel):
             cement type like DIN 197.1 Tab. 1
 
         """
-        #print('C, FA, SF, GGBS, L, PZ')
-        #print(C, FA, SF, GGBS, L, PZ)
         
         ges = (C+FA+SF+GGBS+L+PZ)
         

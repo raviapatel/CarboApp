@@ -5,9 +5,10 @@ Created on Mon Mar 22 08:27:48 2021
 @author: gf5901
 """
 
+from dataclasses import dataclass
 from CarboModels.CarboModel import CarboModel 
-import math
     
+@dataclass
 class Ekolu(CarboModel): #Model of Eklou.2018
     """
     This is the carbonation model according Ekolu.2018
@@ -21,74 +22,91 @@ class Ekolu(CarboModel): #Model of Eklou.2018
         GGBS_c (-)
         Sheltered (bool)
         Exposed (bool)
+        
+    attributes
+    ----------
+    name : str
+        Name of the model
+    f_c : float 
+        28-day compressive strenght (MPa)
+    RH : float 
+        Relative humidity (%)
+    CO2 : float
+        CO2 concentration (%)
+    FA_c : float
+        Fly ash content (-) 
+    GGBS_c : float 
+        Blast furnace slag content (-) 
+    ExCo : str
+        Exposure conditions ('Exposed', 'Sheltered')
+    
+    Methods
+    -------
+        Calculates self.karbo (mm/year^0.5)     
+        
     """
     color="orange"
     
-    def __init__(self, name,  f_c, RH, CO2, FA_c, GGBS_c, Sheltered, Exposed): # change for cement type
-    
-        self.name = name
-        self.f_c  = f_c
-        
-         
-        if  Sheltered == True:
-            self.e_s=1
-        elif Exposed == True:
-            self.e_s= f_c**(-0.2)
-        else:
-            print("Exposure not defined")
-            self.e_s=float('NaN')
-            return
-        
-        #Table 'Cement factors'
+    name:str 
+    f_c:float 
+    RH:float 
+    CO2:float 
+    FA_c:float 
+    GGBS_c:float 
+    ExCo:str 
 
-        if FA_c + GGBS_c <=0.2:
+    
+    def __post_init__(self):          # change for cement type
+    
+        #Formula (9)
+        if  self.ExCo == "Sheltered":
+            self.e_s = 1
+        else:
+            self.e_s = self.f_c**(-0.2)
+        
+        #Table (13)
+        if self.FA_c + self.GGBS_c <=0.2:
             self.g=-1.5
-        elif FA_c<=0.3:
-            print("FA_c is ", FA_c, 'reccomened is 0.3')
+        elif self.FA_c<=0.3:
+            print("FA_c is ", self.FA_c, 'reccomened is 0.3')
             self.g=-1.4
-        elif GGBS_c<=0.5:
-            print("GGBS_c is ", GGBS_c, 'reccomened is 0.5')
+        elif self.GGBS_c<=0.5:
+            print("GGBS_c is ", self.GGBS_c, 'reccomened is 0.5')
             self.g=-1.4
         else:
             print('SCM not fitted')
             return
             
-        if 50 <= RH <=80:                             #[%]
-            self.e_h=16*((RH-35)/100)*(1-RH/100)**(1.5)    
-        else:
-            print("Error RH")
-            self.e_h=float('NaN')
-            return
+        #Formula (8)
+        self.e_h=16*((self.RH-35)/100)*(1-self.RH/100)**(1.5)    #for 50<=RH<=80
+
         
-        if CO2 <=200/1000000: #ppm
+        #Table (10)
+        if self.CO2 <=0.02: #ppm
             alpha= 1.4
             r=-1/4
-        elif CO2 <= 300/1000000:
+        elif self.CO2 <= 0.03:
             alpha= 1
             r=0
-        elif CO2 <= 500/1000000:
+        elif self.CO2 <= 0.05:
             alpha= 2.5
             r=-1/4
-        elif CO2 <= 1000/1000000:
+        elif self.CO2 <= 0.1:
             alpha= 4.5
             r=-2/5
-        elif CO2 <= 2000/1000000:
+        elif self.CO2 <= 0.2:
             alpha= 14
             r=-2/3
-        else:
-            print("Error in CO2 concentration (is > 2000ppm)")
-            return
             
-        
+        #Formula (10)
         if 20 < self.f_c <60:                              #[MPa]
-            self.e_co=alpha*f_c**r
-        elif f_c >= 60:
+            self.e_co=alpha*self.f_c**r
+        elif self.f_c >= 60:
             self.e_co=1
         else:
             print("Error f_c")
             self.e_co=float('NaN')
             return None
-
 
     def __repr__(self):
         return("Ekolu.2018 f_c,28")
@@ -105,40 +123,8 @@ class Ekolu(CarboModel): #Model of Eklou.2018
             
         F_ct=t/(a+b*t) *self.f_c   
         cem=1000
-        return self.e_h*self.e_s*self.e_co*cem*(F_ct)**self.g 
+        
+        self.karbo = self.e_h*self.e_s*self.e_co*cem*(F_ct)**self.g 
+        return self.karbo
     
-    def x_c(self, t):
-        """
-        calculates one Carbonation depth for given time t 
-        Parameters
-        ----------
-        t(years): TYPE
-            Time
-
-        Returns
-        -------
-        x_c(mm) : TYPE
-            cabonation depth
-        """
-        x_c = self.k(t) * t**0.5
-        return x_c
-    
-    def x_cList(self, t):
-        """
-        calculates Carbonation depth for time serie
-
-        Parameters
-        ----------
-        t(years): List
-            Time
-
-        Returns
-        -------
-        x_c(mm) : List with x.xx 
-            cabonation depth
-        """
-        x_c =[]
-        for i in t:
-            x_c.append(round(self.k(i)* i**0.5, 2))
-        return x_c
     

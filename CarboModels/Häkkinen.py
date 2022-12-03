@@ -17,17 +17,17 @@ class Häkkinen(CarboModel):
     attributes
     ----------
     name : str
-        name of the model
+        Name of the model
     C : float
-        clinker content (kg/m³)
+        Clinker content (kg/m³)
     f_c : float
         28-day compressive strenght (MPa)
     FA : float
-        fly ash (kg/m³) 
+        Fly ash content (kg/m³) 
     SF : float
-        silicia fume (kg/m³) 
+        Silicia fume content (kg/m³) 
     GGBS : 
-        blast furnace slag (kg/m³) 
+        Blast furnace slag content (kg/m³) 
     
     Methods
     -------

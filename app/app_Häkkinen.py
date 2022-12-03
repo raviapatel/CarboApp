@@ -17,7 +17,7 @@ class app_Häkkinen():
         col1, col2  = st.columns([1,1])
         with col1:
             exposed = st.radio("Choose location of the component:", ["Sheltered from rain", "Exposed to rain"])
-            f_c = st.number_input("28-day compressive strenght (MPa)", 0.5,None,25.0,step=(0.5))
+            f_c = st.number_input("28-day compressive strenght: (MPa)", 0.5,None,25.0,step=(0.5))
             C = st.number_input("Clinker Content: (kg/m³)", value=(200.0), step=(0.5))
         with col2:
             entrained = st.radio("Choose if component is air entrained:", ["Air entrained","Not air entrained"])
@@ -28,6 +28,6 @@ class app_Häkkinen():
             if optional == "Blast furnance slag": GGBS = st.number_input("Blast furnance slag: (kg/m³)", help="recommended value 70%", step=(0.5)); FA = 0.0; SF = 0.0
         t = st.number_input("Minimum lifetime (years): ", min_value=1,value=50)
        
-        if st.button("Calculate "): 
+        if st.button("Calculate"): 
             Modell01 = Häkkinen(self.name, C, f_c, exposed, entrained, FA, SF, GGBS)
             Modell01.calculate(t)
