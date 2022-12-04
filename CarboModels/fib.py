@@ -5,9 +5,11 @@ Created on Fri Mar 19 08:18:38 2021
 @author: gf5901
 """
 
+from dataclasses import dataclass
 from CarboModels.CarboModel import CarboModel 
 import math
     
+@dataclass
 class fib(CarboModel):
     """
     This is the carbonation model according to fib.2006 
@@ -20,25 +22,45 @@ class fib(CarboModel):
         t_c(days) curing time
         R_NAC1(mm2/year) 
         C_co2(kg/m^3)peripheral concentration by weight of CO2.
+
+    attributes
+    ----------
+    name : str
+        Name of the model
+    RH : float 
+        Relative humidity (%)
+    ToW : float 
+        Time of wettness (days)
+    p_sr : float 
+        Probability of driving rain (-)
+    t_c : float 
+        Curing time (days)
+    R_NAC1 : float 
+        ? (mm²/year)
+    C_co2 : float
+        Peripheral concentration by weigth of CO2 (kg/m³)
+    
+    Methods
+    -------
+        Calculates self.karbo (mm/year^0.5)
+    
     """
+    
     color="red"
 
-    def __init__(self, name, RH, ToW, p_sr, t_c, R_NAC1, C_co2):
-        self.name =name
-        self.RH= RH 
-        self.ToW=ToW
-        self.p_sr= p_sr
-        #self.t_c= t_c 
-        #self.f_c=f_c 
-        self.C_co2=C_co2
-        self.R_NAC1=R_NAC1
-        
+    name:str 
+    RH:float 
+    ToW:float 
+    p_sr:float 
+    t_c:float 
+    R_NAC1:float 
+    C_co2:float 
+
+    def __post_init__(self):
         #RH in (%)
-        self.k_e= ((1-(RH/100)**5)/(1-0.65**6))**2.5
+        self.k_e= ((1-(self.RH/100)**5)/(1-0.65**6))**2.5
         #t_c in (days)
-        self.k_c =(t_c/7)**(-0.567)
-        #f_c in (MPa)
-    
+        self.k_c =(self.t_c/7)**(-0.567)
 
     def __repr__(self):
         return "fib MC SLD"

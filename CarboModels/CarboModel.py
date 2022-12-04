@@ -81,8 +81,11 @@ class CarboModel:
 
         """
         
-        st.success("Carbonation depth: " + str(round(self.x_c(t),1)) + " mm")
-        st.success("k =" + str(round(self.k(t),2)) + " mm/year^0.5")
+       # st.success("Carbonation depth: " + str(round(self.x_c(t),1)) + " mm")
+        #st.success("k =" + str(round(self.k(t),2)) + " mm/√(year)")
+        
+        st.latex("\sf Carbonation \, depth=" + str(round(self.x_c(t),1)) + " mm")
+        st.latex("\sf k = " + str(round(self.k(t),2)) + "{mm \over {\sqrt{year}}}")
         
         t_range = np.arange(1,t+1)
         xc_list = self.x_cList(t)

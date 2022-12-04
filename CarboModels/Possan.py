@@ -142,9 +142,10 @@ class Possan(CarboModel):
             print('error: CEM not defined')
             self.karbo=float('NaN')
             return
-    
+        
+        #Formula (13)
         #t [year], f_c[MPa], CO2[%], RH[-]
-        eq1=( k_ad*ad**(3/2)/(40+self.f_c) )+( k_CO2*self.CO2**(0.5) /(60+self.f_c) )-(k_UR*(self.RH-0.58)**2 / (100+self.f_c) ) 
+        eq1=(k_ad*ad**(3/2)/(40+self.f_c))+( k_CO2*self.CO2**(0.5)/(60+self.f_c))-(k_UR*(self.RH-0.58)**2/(100+self.f_c)) 
         self.karbo = k_c *(20/self.f_c)**(k_fc) * math.exp(eq1)*k_ce      
         
         
@@ -168,8 +169,9 @@ class Possan(CarboModel):
         x_c(mm) : List with x.xx 
             cabonation depth
         """
+        t=int(t)
         x_c =[]
-        for i in t:
+        for i in range(1,t+1):
             x_c.append(round(self.karbo*(i/20)**0.5, 2))
         return x_c
     

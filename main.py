@@ -1,5 +1,6 @@
 import streamlit as st
 from app.app_overwiew import app_overwiew
+from app.app_compare import CompareModels
 from app.app_Häkkinen import app_Häkkinen
 from app.app_fib import app_fib
 from app.app_CECS import app_CECS
@@ -28,8 +29,11 @@ with tab2:              # Overview of the Models
     
 with tab3:              # Calculations
     st.subheader("Choose a Model:")
-    name = st.selectbox("Choose a Model:",("Model 01 - Häkkinen", "Model 02 - fib", "Model 03 - CECS", "Model 04 - Guiglia", "Model 05 - Silva", "Model 06 - Yang", "Model 07 - Hills", "Model 08 - Greve-Dierfeld", "Model 09 - Ta", "Model 10 - Ekolu", "Model 11 - Possan"), label_visibility="collapsed")
-
+    name = st.selectbox("Choose a Model:",("Compare", "Model 01 - Häkkinen", "Model 02 - fib", "Model 03 - CECS", "Model 04 - Guiglia", "Model 05 - Silva", "Model 06 - Yang", "Model 07 - Hills", "Model 08 - Greve-Dierfeld", "Model 09 - Ta", "Model 10 - Ekolu", "Model 11 - Possan"), label_visibility="collapsed")
+    
+    if name =="Compare":
+        st.subheader("switch to tab 'compare'")
+    
     if name == "Model 01 - Häkkinen":         # Häkkinen
         app_Häkkinen(name)
             
@@ -63,11 +67,8 @@ with tab3:              # Calculations
     elif name == "Model 11 - Possan":         # Possan - leer
        app_Possan(name)
 
-
 with tab4:              # Compare
-    st.subheader("Choose Models to Compare:")
-    compare = st.multiselect("Choose Models:", ("Model 01 - Häkkinen", "Model 02 - fib", "Model 03 - CECS", "Model 04 - Guiglia", "Model 05 - Silva", "Model 06 - Yang", "Model 07 - Hills", "Model 08 - Greve-Dierfeld", "Model 09 - Ta", "Model 10 - Ekolu", "Model 11 - Possan"), label_visibility="collapsed")
-    
+    CompareModels()
             
 
  #    df = pd.DataFrame((("64","84"),("67","104"),("75","64")),index=("1","2","3"),columns=("relative humidity (%)","number of rainy days (-)"))

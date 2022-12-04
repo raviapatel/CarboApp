@@ -1,4 +1,5 @@
 import streamlit as st
+from PIL import Image
     
 class app_overwiew:
     
@@ -100,3 +101,6 @@ class app_overwiew:
         col1, col2 = st.columns([1,3])
         col1.write("XC4")
         col2.write("Cyclic wet and dry")
+        
+        image = Image.open("DIN EN 197-1.jpg")
+        st.image(image, use_column_width=True)
