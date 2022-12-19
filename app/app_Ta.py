@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from CarboModels import Ta
 
 @dataclass
-class app_Ta():
+class app_Ta(): #Model 09
     
     name:str
     

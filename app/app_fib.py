@@ -31,6 +31,7 @@ class app_fib():
             else:
                 f_c = st.number_input("f_c")
         t = st.number_input("Minimum lifetime: (years)")
+        
         if choose == "Set E_NAC1":
             if st.button("Calculate"): 
                 Modell02 = fib(self.name, RH, ToW, p_sr, t_c, R_NAC1, C_co2)

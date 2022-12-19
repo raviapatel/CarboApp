@@ -89,6 +89,10 @@ class Yang(CarboModel):
                 b_f = 0.21
             elif self.Finishing=="Paint":
                 b_f = 0.57
+            else:
+                self.karbo="NaN"
+                return
+            
         elif self.Location=="Indoor":
             if self.Finishing =="Nothing":
                 b_f = 1.0
@@ -98,6 +102,9 @@ class Yang(CarboModel):
                 b_f = 0.8
             elif self.Finishing=="Tile":
                 b_f = 0.7
+            else:
+                self.karbo="NaN"
+                return
         
         self.b_f=b_f
         
@@ -124,9 +131,8 @@ class Yang(CarboModel):
         elif self.SF/(self.C+self.FA+self.GGBS+self.SF)<0.2 and self.FA==0 and self.GGBS==0:
             b_s=1.1
         else:
-            st.warning("Calculation could not be executed! Mixture design not included in the model!")
-            self.karbo = 0
-            b_s = 0
+            self.karbo="NaN"
+            return
             
         self.b_s = b_s
         

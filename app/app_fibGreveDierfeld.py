@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from CarboModels import fibGreveDierfeld
 
 @dataclass
-class app_fibGreveDierfeld():
+class app_fibGreveDierfeld(): #Model 08
     
     name:str
     

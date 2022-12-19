@@ -57,6 +57,9 @@ class Hills_time(CarboModel):
             self.I_GGBS=1
         elif self.mixture=="OPC + fly ash":
             self.I_FA=1
+        else:
+            self.karbo="NaN"
+            return
             
         self.I_Exposed=0
         self.I_Sheltered=0
@@ -68,58 +71,20 @@ class Hills_time(CarboModel):
             self.I_Sheltered=1
         elif self.ExCo=="Indoors":            #==True and self.Sheltered == False and self.Exposed==False:
             self.I_Indoors=1
-
+        else:
+            self.karbo="NaN"
+            return
             
         if self.origin == "Experimental":
             self.I_exp=1
-        else:
+        elif self.origin == "Strucutral":
             self.I_exp=0
+        else:
+            self.karbo="NaN"
+            return
 
         self.karbo = math.exp(0.567-0.167*self.I_C+0.101*self.I_GGBS+0.129*self.I_FA+0.249*self.I_Exposed + 0.818*self.I_Sheltered+0.433*self.I_Indoors+(0.037-0.088*self.I_exp)*self.age+(-0.00046+0.0013*self.I_exp)*self.age**2)
         
     def __repr__(self):
         return("Hills.2015 time")
-    
-  #  def k(self,t):  #t in [year]
-        
-        #K in [mm/year^0.5])
-    
-    
- #  def x_c(self, t):
-        """
-        calculates one Carbonation depth for given time t 
-        k(t)
-        Parameters
-        ----------
-        t(years): TYPE
-            Time
-
-        Returns
-        -------
-        x_c(mm) : TYPE
-            cabonation depth
-        """
-        
-  #      x_c = self.k(t) * t**0.5
-   #     return x_c
-    
- #   def x_cList(self, t):
-        """
-        calculates Carbonation depth for time serie 
-        k(t)
-        Parameters
-        ----------
-        t(years): List
-            Time
-
-        Returns
-        -------
-        x_c(mm) : List with x.xx 
-            cabonation depth
-        """
-   #     x_c =[]
-    #    for i in t:
-  #          x_c.append(round(self.k(i)* i**0.5, 2))
-     #   return x_c
-    
  

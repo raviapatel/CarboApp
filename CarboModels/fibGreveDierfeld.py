@@ -67,9 +67,11 @@ class fibGreveDierfeld(CarboModel):
         CEM=self.CEM
         wb=self.wb
         
-        if CEM == '?':
+        if CEM == "Unknown":
             CEM = self.findCEM(self.C, self.FA, self.SF, self.GGBS, self.L, self.PZ)
-        
+        if CEM =="Still Unknown":
+            self.karbo="NaN"
+            return
         #k_NAC from Tab 7 in GreveDierfeld.2016d -> wb value upper boundary, k_NAc conservativ
         
         if ((wb<=0.45) and (CEM =="CEM I" or CEM =="CEM II/A"))  :
@@ -111,7 +113,8 @@ class fibGreveDierfeld(CarboModel):
             k_NAC=7
 
         else:
-            k_NAC=np.nan
+            self.karbo="NaN"
+            return
             
         self.k_NAC=k_NAC
         
@@ -172,7 +175,7 @@ class fibGreveDierfeld(CarboModel):
         elif 0.45 <= C/ges <= 0.64 and 0.36<= FA+SF+PZ/ges <= 0.55: #PZ Puzzolan (P, O)
             return 'CEM IV/B' 
         else:
-            return 'unknown'
+            return "Still Unknown"
     
     def k(self, t):
         #C_co2 in [kg/m³], t in [year]

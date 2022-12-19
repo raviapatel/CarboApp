@@ -120,8 +120,7 @@ class Ta(CarboModel):
         elif 16 <= S_max < 31.5:
             po_air= 0.023 -(0.023-0.015)/(31.5-16) *(S_max-16)    #[-]
         else:
-            print('error S_max')
-            self.karbo= float('NaN')
+            self.karbo="NaN"
             return
         
         f_c= (7.84*self.f_cem)/(1+self.wc*self.p_c/self.p_w+po_air*self.p_c/self.C)**2 # Fig.2 (54) #[]????
@@ -139,8 +138,7 @@ class Ta(CarboModel):
         if 0.5< self.wc<0.8:
             n=1.8       #n (n.u.) is an empirical constant: n = 1.8 for 0.5 < W/C < 0.8. 
         else:
-            print("wc error: empirical constant n not defined")
-            self.karbo = float('NaN')
+            self.karbo="NaN"
             return
         f_wc= 2437.7* math.exp(-5.592*self.wc)
         f_PwcFA = f_wc *( ( (0.93-3.95*0.94**(100*self.wc))*po -po_air ) / (self.W/self.p_w + self.C/self.p_c +self.FA/self.p_FA)  )**(n)

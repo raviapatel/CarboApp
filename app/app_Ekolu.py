@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from CarboModels import Ekolu
 
 @dataclass
-class app_Ekolu():
+class app_Ekolu():  #Model 10
     
     name:str
     

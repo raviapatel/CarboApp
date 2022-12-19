@@ -74,9 +74,11 @@ class Possan(CarboModel):
         self.RH = self.RH/100   #(-)
         
         #for HuyVu:
-        if self.CEM == '?':    
+        if self.CEM == 'Unknown':    
             self.CEM= self.findCEM(self.C, self.FA, self.SF, self.GGBS, self.LS, self.PZ)
-            print('cement type defined as:', self.CEM)
+        if self.CEM == "Still Unknown":
+            self.karbo="NaN"
+            return
 
         self.RH=self.RH/100 #[-]
         self.CO2=self.CO2*100 #[%]
@@ -88,10 +90,10 @@ class Possan(CarboModel):
         elif self.ExCo == "Sheltered":
             k_ce=1
             
-        elif self.ExCo == "Indoors":
+        elif self.ExCo == "Indoor":
             k_ce=1.3
         else:
-            print('Error: Exposure not defined')
+            self.karbo="NaN"
             return
     
         ad= (self.FA+self.SF)/self.C *100 # puzzolanic addition content related to cement mass in [%] 
@@ -139,8 +141,7 @@ class Possan(CarboModel):
             k_CO2=15.5
             k_UR=1000
         else:
-            print('error: CEM not defined')
-            self.karbo=float('NaN')
+            self.karbo="NaN"
             return
         
         #Formula (13)
@@ -221,7 +222,7 @@ class Possan(CarboModel):
         elif 0.45 <= C/ges <= 0.64 and 0.36<= FA+SF+PZ/ges <= 0.55: #PZ Puzzolan (P, O)
             return 'CEM IV/B' 
         else:
-            return 'unknown' 
+            return 'Still Unknown' 
             
         
     

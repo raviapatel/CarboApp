@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from CarboModels import Yang
 
 @dataclass
-class app_Yang():
+class app_Yang():   #Model 06
     
     name:str
     
@@ -26,14 +26,14 @@ class app_Yang():
         with col2:
             RH = st.number_input("Relative humidity: (%)", 1.0,100.0,50.0, step=0.5) 
             wc = st.number_input("Water / cement ratio: (-)",0.0,None,0.6,step=(0.05))
-            C_co2 = st.number_input("CO2 density around concrete surface: (%)",0.0,None,0.040,step=(0.005))
+            CO2 = st.number_input("CO2 density around concrete surface: (%)",0.0,None,0.040,step=(0.005))
 
-            Location = st.radio("Choose location of component:", ["Outdoor","Indoor"])
-            if Location=="Outdoor":     Finishing = st.radio("Choose Finishing of component:", ["Nothing", "Plaster", "Paint", "Mortar", "Mortar + Plaster", "Mortar + Paint", "Tile"])
-            elif Location=="Indoor":    Finishing = st.radio("Choose Finishing of component:", ["Nothing", "Paint", "Mortar", "Tile"])
+            ExCo = st.radio("Choose location of component:", ["Outdoor","Indoor"])
+            if ExCo =="Outdoor":     Finishing = st.radio("Choose Finishing of component:", ["Nothing", "Plaster", "Paint", "Mortar", "Mortar + Plaster", "Mortar + Paint", "Tile"])
+            elif ExCo =="Indoor":    Finishing = st.radio("Choose Finishing of component:", ["Nothing", "Paint", "Mortar", "Tile"])
 
         t = st.number_input("Minimum lifetime (years): ", min_value=1,value=50)
         
         if st.button("Calculate"): 
-            Modell06 = Yang(self.name, t, C, S, G, FA, GGBS, SF, wc, RH, C_co2, Location, Finishing)
+            Modell06 = Yang(self.name, t, C, S, G, FA, GGBS, SF, wc, RH, CO2, ExCo, Finishing)
             Modell06.calculate(t)

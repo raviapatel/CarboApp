@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from CarboModels import Possan
 
 @dataclass
-class app_Possan():
+class app_Possan(): #Model 11
     
     name:str
     
@@ -17,7 +17,6 @@ class app_Possan():
         col1, col2  = st.columns([1,1])
         with col1:
             f_c = st.number_input("28-day compressive strenght: (MPa)", min_value=(20.0), value=(25.0), max_value=(60.0), step=(0.5))
-
             C = st.number_input("C: (kg/m³)", value=(1000.0))
             FA = st.number_input("Fly ash content: (kg{m³})", value=(0.0), max_value=(1.0))
             SF = st.number_input("SF: (kg/m³)", value=(0.0))

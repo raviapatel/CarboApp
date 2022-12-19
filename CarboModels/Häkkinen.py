@@ -6,7 +6,7 @@ Created on Fri Mar 19 13:52:09 2021
 """
 from dataclasses import dataclass
 from CarboModels.CarboModel import CarboModel 
-import streamlit as st
+#import streamlit as st
 
 @dataclass
 class Häkkinen(CarboModel):
@@ -61,12 +61,18 @@ class Häkkinen(CarboModel):
             self.c_env = 0.5
         elif self.exposed == "Sheltered from rain":
             self.c_env = 1.0   
+        else:
+            self.karbo="NaN"
+            return
             
         
         if self.entrained == "Air entrained":
             self.c_air = 0.7
         elif self.entrained == "Not air entrained":
             self.c_air = 1.0
+        else:
+            self.karbo="NaN"
+            return
         
         if self.C>0 and  self.FA==0 and self.SF==0 and self.GGBS==0:   #Tab A2 in DuraCRete.1998
             self.a=1800
@@ -83,6 +89,9 @@ class Häkkinen(CarboModel):
             #print('recommended value GGBS=70%, here:', GGBS/(C+FA+SF+GGBS)*100)
             self.a=360
             self.b=-1.2
+        else:
+            self.karbo="NaN"
+            return
         
         self.karbo = self.c_env*self.c_air*self.a*self.f_c**self.b
     

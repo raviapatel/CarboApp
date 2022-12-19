@@ -64,6 +64,9 @@ class Hills_fc(CarboModel):
             self.I_GGBS=1
         elif self.mixture=="OPC + fly ash":
             self.I_FA=1
+        else:
+            self.karbo="NaN"
+            return
             
         self.I_Exposed=0
         self.I_Sheltered=0
@@ -73,8 +76,11 @@ class Hills_fc(CarboModel):
             self.I_Exposed=1
         elif self.ExCo=="Sheltered":       #== True and self.ExCo==False and self.Indoors==False:
             self.I_Sheltered=1
-        elif self.ExCo=="Indoors":            #==True and self.Sheltered == False and self.ExCo==False:
+        elif self.ExCo=="Indoor":            #==True and self.Sheltered == False and self.ExCo==False:
             self.I_Indoors=1
+        else:
+            self.karbo="NaN"
+            return
             
         self.karbo = math.exp(1.066+1.761*self.I_C+2.062*self.I_GGBS+2.061*self.I_FA-0.639*self.I_Exposed -0.182*self.I_Sheltered-0.648*self.I_Indoors+(0.025-0.053*self.I_C-0.052*self.I_GGBS-0.05*self.I_FA)*self.f_c)
         

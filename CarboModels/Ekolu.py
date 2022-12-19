@@ -58,11 +58,19 @@ class Ekolu(CarboModel): #Model of Eklou.2018
     
     def __post_init__(self):          # change for cement type
     
+        self.karbo=0
+        
         #Formula (9)
         if  self.ExCo == "Sheltered":
             self.e_s = 1
-        else:
+            print("stop")
+        elif self.ExCo == ("Exposed" or "Outdoor"):
             self.e_s = self.f_c**(-0.2)
+            print("stöple")
+        else:
+            self.karbo="NaN"
+            print("stop 1")
+            return
         
         #Table (13)
         if self.FA_c + self.GGBS_c <=0.2:
@@ -74,7 +82,7 @@ class Ekolu(CarboModel): #Model of Eklou.2018
             print("GGBS_c is ", self.GGBS_c, 'reccomened is 0.5')
             self.g=-1.4
         else:
-            print('SCM not fitted')
+            self.karbo="NaN"
             return
             
         #Formula (8)
@@ -97,6 +105,9 @@ class Ekolu(CarboModel): #Model of Eklou.2018
         elif self.CO2 <= 0.2:
             alpha= 14
             r=-2/3
+        else:
+            self.karbo="NaN"
+            return
             
         #Formula (10)
         if 20 < self.f_c <60:                              #[MPa]
@@ -104,15 +115,13 @@ class Ekolu(CarboModel): #Model of Eklou.2018
         elif self.f_c >= 60:
             self.e_co=1
         else:
-            print("Error f_c")
-            self.e_co=float('NaN')
-            return None
+            self.karbo="NaN"
+            return
 
     def __repr__(self):
         return("Ekolu.2018 f_c,28")
     
     def k(self,t):
-        
         #with f_c,28 strenght
         if t < 6:                                      #[years] 
             a=0.35
@@ -123,8 +132,10 @@ class Ekolu(CarboModel): #Model of Eklou.2018
             
         F_ct=t/(a+b*t) *self.f_c   
         cem=1000
-        
-        self.karbo = self.e_h*self.e_s*self.e_co*cem*(F_ct)**self.g 
-        return self.karbo
+        if self.karbo==0:
+            self.karbo = self.e_h*self.e_s*self.e_co*cem*(F_ct)**self.g 
+            return self.karbo
+        else:
+            return self.karbo
     
     
