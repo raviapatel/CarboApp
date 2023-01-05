@@ -1,7 +1,7 @@
 import streamlit as st
-from app.app_home import app_home
-from app.app_overwiew import app_overwiew
-from app.app_compare import app_Compare
+from app.app_Home import app_home
+from app.app_Overwiew import app_overwiew
+from app.app_Compare import app_Compare
 from app.app_MonteCarlo import app_MonteCarlo
 from app.app_Models import app_Models
 

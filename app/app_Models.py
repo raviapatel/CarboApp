@@ -6,22 +6,22 @@ Created on Thu Jan  5 18:09:21 2023
 """
 import streamlit as st
 from dataclasses import dataclass
-from app_Model.app_Häkkinen import app_Häkkinen
-from app_Model.app_fib import app_fib
-from app_Model.app_CECS import app_CECS
-from app_Model.app_Guiglia import app_Guiglia
-from app_Model.app_Silva import app_Silva
-from app_Model.app_Yang import app_Yang
-from app_Model.app_Hills import app_Hills
-from app_Model.app_GreveDierfeld import app_GreveDierfeld
-from app_Model.app_Ta import app_Ta
-from app_Model.app_Ekolu import app_Ekolu
-from app_Model.app_Possan import app_Possan
+from app.app_models.app_Häkkinen import app_Häkkinen
+from app.app_models.app_fib import app_fib
+from app.app_models.app_CECS import app_CECS
+from app.app_models.app_Guiglia import app_Guiglia
+from app.app_models.app_Silva import app_Silva
+from app.app_models.app_Yang import app_Yang
+from app.app_models.app_Hills import app_Hills
+from app.app_models.app_GreveDierfeld import app_GreveDierfeld
+from app.app_models.app_Ta import app_Ta
+from app.app_models.app_Ekolu import app_Ekolu
+from app.app_models.app_Possan import app_Possan
 
-@dataclass
-class app_Models():
+
+class app_Models:
         
-    def __post_innit__(self):
+    def __init__(self):
         st.subheader("Choose a Model:")
         name = st.selectbox("Choose a Model:",("Model 01", "Model 02", "Model 03", "Model 04", "Model 05", "Model 06", "Model 07", "Model 08", "Model 09", "Model 10", "Model 11"), label_visibility="collapsed")
         
