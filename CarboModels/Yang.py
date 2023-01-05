@@ -1,58 +1,45 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Fri Mar 19 14:55:34 2021
 
-@author: gf5901
-"""
 from dataclasses import dataclass
 from CarboModels.CarboModel import CarboModel 
-import streamlit as st
 import math
     
 @dataclass
 class Yang(CarboModel):
     """
     
-    This is the carbonation model according Yang.2014
-    Funct: D(t), a(t), k(t)
-    Variables:
-        name= Name of cenario
-        {C,S,G, FA, GGBS, SF}[kg/m³]
-        wc(-)
-        RH(%),
-        C_co2,[kg/m^3] is the peripheral concentration by weight of CO2.
-        Finishing(bool)
+    This is the carbonation model according to Yang.2014
         
     attributes
     ----------
     name : str
-        Name of the Model
+        name of cenario
     C : float
-        Cement content (kg/m³)
+        cement content [kg/m³]
     S : float
-        Sand content (kg/m³)
+        sand content [kg/m³]
     G : float
-        Gravel content (kg/m³)
+        gravel content [kg/m³]
     FA : float
-        Fly ash content (?)
+        fly ash content [kg/m³]
     GGBS : float
-        Ground granulated blast furnace slag content (kg/m³)
+        ground granulated blast furnace slag content [kg/m³]
     SF : float
-        Silica fume content (kg/m³)
+        silica fume content [kg/m³]
     wc : float
-        Water / cement ratio (-)
+        water / cement ratio [-]
     RH : float
-         Relative humidity around concrete surface (%) 
-    C_co2 : float
-    
-    Location : str
-    
+         relative humidity around concrete surface [%] 
+    CO2 : float
+        peripheral concentration by weight of CO2 [%]
+    ExCo : str
+        exposure condition of component
     Finishing : str
-     
+         finishing material of component
     
     Methods
     -------
-        Calculates self.karbo (mm/year^0.5)    
+        Calculates self.karbo [mm/year^0.5]    
    
     """
     
@@ -66,15 +53,15 @@ class Yang(CarboModel):
     SF:float 
     wc:float 
     RH:float 
-    C_co2:float 
-    Location:str
+    CO2:float 
+    ExCo:str
     Finishing:str
     
     def __post_init__(self):
        
-        self.C_co2=self.C_co2/1000                                  # [g/cm^3] = [kg/m^3]/1000
+        self.CO2=0.0409*self.CO2*10000*44.01/1000000000  # [g/cm^3] = 0.0409*CO2[%]*10000*44.01*1000000000
         
-        if self.Location=="Outdoor":
+        if self.ExCo=="Outdoor" or self.ExCo=="Sheltered from Rain" or self.ExCo=="Exposed to Rain":
             if self.Finishing=="Nothing":
                 b_f = 1.0
             elif self.Finishing=="Plaster":
@@ -93,7 +80,7 @@ class Yang(CarboModel):
                 self.karbo="NaN"
                 return
             
-        elif self.Location=="Indoor":
+        elif self.ExCo=="Indoor":
             if self.Finishing =="Nothing":
                 b_f = 1.0
             elif self.Finishing=="Mortar":
@@ -136,7 +123,7 @@ class Yang(CarboModel):
             
         self.b_s = b_s
         
-        self.karbo = math.sqrt(2*self.D(self.t) * self.C_co2 *365 / self.a(self.t))*10 
+        self.karbo = math.sqrt(2*self.D(self.t) * self.CO2 *365 / self.a(self.t))*10 
 
     def __repr__(self):
         return("Yang.2014")
@@ -158,31 +145,5 @@ class Yang(CarboModel):
         a_co= a_h *M_ct * M_co                  #*10**(-6)     #[g/cm^3]
         return a_co
         
-    
-   # def k(self, t):
-    #    return math.sqrt(2*self.D(t) * self.C_co2 *365 / self.a(t)  )*10     #mm/t^0.5
-    
-   # def x_c(self,t):
-    #    return self.k(t)*t**0.5
-        
-#    def x_cList(self, t):
-        """
-        Carbonation depth
-    
-        Parameters
-        ----------
-        t(years): List
-            Time
-    
-        Returns
-        -------
-        x_c(mm) : List with x.xx 
-            cabonation depth
-        """
- #       x_c =[]
-  #      for i in t:
-   #         x_c.append(round(self.k(i)*i**0.5, 2))
-    #    return x_c            
-
     
         

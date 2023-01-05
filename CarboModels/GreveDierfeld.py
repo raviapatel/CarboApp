@@ -18,7 +18,7 @@ import math
 import numpy as np
     
 @dataclass
-class fibGreveDierfeld(CarboModel):
+class GreveDierfeld(CarboModel):
     """
     This is the carbonation model according to fib.2006 where the k_NAC from carboantion resistance class GreveDierfeld.2016d
     k=k(t)
@@ -37,23 +37,44 @@ class fibGreveDierfeld(CarboModel):
         p_dr(-) probability of driving rain
         t_c(days) curing time
         C_co2[-] !!!! in Gereve-Dierfeld.2016a [kg/m^3], but C_a is only given in [Vol%]
+    attributes
+    ----------
+    name : str 
+        mame of cenario
+    RH : float
+        relative humidity [%]
+    CEM : str
+        
+    wb : float 
+    
+    CO2 : float
+    
+    ToW : float 
+    
+    p_dr : float 
+    
+    t_c : float 
+    
+    
+    Methods
+    -------
+        calculates self.karbo [mm/year^0.5]
+        
     """
     color="olive"
     
     name:str 
     RH:float 
-    CEM:str 
-    C:float 
-    FA:float 
-    SF:float 
-    GGBS:float 
-    L:float 
-    PZ:float 
+    Cem:str 
     wb:float 
     CO2:float
     ToW:float 
     p_dr:float 
     t_c:float 
+    y_f:float = 1.0
+    b_c:float = -0,567
+    b_w:float = 0.446
+    
     
     def __post_init__(self):
         
@@ -64,14 +85,9 @@ class fibGreveDierfeld(CarboModel):
         #t_c in (days)
         self.k_c =(self.t_c/7)**(-0.567)
         
-        CEM=self.CEM
+        CEM=self.Cem
         wb=self.wb
-        
-        if CEM == "Unknown":
-            CEM = self.findCEM(self.C, self.FA, self.SF, self.GGBS, self.L, self.PZ)
-        if CEM =="Still Unknown":
-            self.karbo="NaN"
-            return
+
         #k_NAC from Tab 7 in GreveDierfeld.2016d -> wb value upper boundary, k_NAc conservativ
         
         if ((wb<=0.45) and (CEM =="CEM I" or CEM =="CEM II/A"))  :
@@ -118,72 +134,20 @@ class fibGreveDierfeld(CarboModel):
             
         self.k_NAC=k_NAC
         
-        self.k_a=self.CO2/(0.04/100)       #k_a[-] GreveDierfeld.2016a Eq 3b 0.04 [Vol%]/// GreveDierfeld.2016 Eq.31 k_a=1.1
-        #print("k_a",k_a)
-        #print("k_NAC", k_NAC)
+        self.k_a=self.CO2/(0.04/100)       #k_a[-] GreveDierfeld.2016a Eq. 3b 0.04 [Vol%]  /// GreveDierfeld.2016 Eq.31 k_a=1.1 (Dissertation)
         #C_co2 in [kg/m³], t in [year]
         self.karbo = self.k_NAC*math.sqrt(self.k_e*self.k_c*self.k_a) 
 
     def __repr__(self):
         return "fib MC SLD and GreveDierfeld.2016d"
     
-    def findCEM(self, C, FA, SF, GGBS, L, PZ):
-        """
-        Function defines Cement according DIN 197.1 Tab. 1 with the SCMs from mixdesign
-        -> in HuyVu C ='CEM I' and SCMs are added
-
-        Parameters
-        ----------
-        C : TYPE
-            usually clinker, but here 'CEM I'
-        FA : TYPE
-            Fly ash (v).
-        SF : TYPE
-            silika fume.
-        GGBS : TYPE
-            slag.
-        L : TYPE, optional
-            Limestone. The default is 0.
-        PZ : TYPE, optional
-            Puzzolan (P, Q). The default is 0.
-
-        Returns
-        -------
-        str
-            cement type like DIN 197.1 Tab. 1
-
-        """
-        #print('C, FA, SF, GGBS, L, PZ')
-        #print(C, FA, SF, GGBS, L, PZ)
-        
-        ges = (C+FA+SF+GGBS+L+PZ)
-        
-        if C/ges >=0.95:
-            return 'CEM I'
-        elif 0.8 <= C/ges <= 0.97 and 0.06<= L/ges <= 0.2: #L=limestone
-            return 'CEM II/A' #'-L'
-        elif 0.8 <= C/ges <= 0.94 and 0.06<= GGBS/ges <= 0.2: 
-            return 'CEM II/A' #'-S'
-        elif 0.65 <= C/ges <= 0.79 and 0.21<= GGBS/ges <= 0.35: 
-            return 'CEM II/B' #'-S'
-        elif 0.8 <= C/ges <= 0.94 and 0.06<= FA/ges <= 0.2: # fly ash kieselsäurereich (V)
-            return 'CEM II/A' #'-V'       
-        elif 0.35 <= C/ges <= 0.64 and 0.36<= GGBS/ges <= 0.65: 
-            return 'CEM III/A'  
-        elif 0.65 <= C/ges <= 0.89 and 0.36<= FA+SF+PZ/ges <= 0.65: #PZ Puzzolan (P, O)
-            return 'CEM IV/A'  
-        elif 0.45 <= C/ges <= 0.64 and 0.36<= FA+SF+PZ/ges <= 0.55: #PZ Puzzolan (P, O)
-            return 'CEM IV/B' 
-        else:
-            return "Still Unknown"
-    
     def k(self, t):
         #C_co2 in [kg/m³], t in [year]
         return self.karbo*self.W(t)
     
     def W(self, t):
-        #p_dr= probability of driving rain [-], t in year
-        return (0.0767/t)**((self.p_dr*self.ToW/365)**0.446/2)
+        #p_dr= probability of driving rain [%], t in year
+        return (0.0767/t)**((((self.p_dr/100)*self.ToW/365)**self.bw)/2)
 
 
        

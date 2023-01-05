@@ -8,7 +8,7 @@ Created on Wed Sep  8 15:44:34 2021
 #easy init
 from CarboModels.CECS220 import CECS220
 from CarboModels.Ekolu import Ekolu
-from CarboModels.fibGreveDierfeld import  fibGreveDierfeld
+from CarboModels.GreveDierfeld import  GreveDierfeld
 from CarboModels.fib import  fib
 from CarboModels.fibGuiglia import fibGuiglia
 from CarboModels.Guiglia import Guiglia

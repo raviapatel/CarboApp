@@ -5,79 +5,58 @@ Created on Mon Dec 19 11:45:48 2022
 @author: marco
 """
 import streamlit as st
-from MonteCarlo.MonteCarlo_fibGuiglia import MC_fibGuiglia
-from app.app_Häkkinen import app_Häkkinen
-from app.app_fib import app_fib
-from app.app_CECS import app_CECS
-from app.app_Guiglia import app_Guiglia
-from app.app_Silva import app_Silva
-from app.app_Yang import app_Yang
-from app.app_Hills import app_Hills
-from app.app_fibGreveDierfeld import app_fibGreveDierfeld
-from app.app_Ta import app_Ta
-from app.app_Ekolu import app_Ekolu
-from app.app_Possan import app_Possan
+from MonteCarlo.MonteCarlo_Häkkinen import MC_Häkkinen              # Modell 01
+from MonteCarlo.MonteCarlo_fib import MC_fib                        # Modell 02
+from MonteCarlo.MonteCarlo_CECS import MC_CECS                      # Modell 03
+from MonteCarlo.MonteCarlo_Guiglia import MC_Guiglia                # Modell 04
+from MonteCarlo.MonteCarlo_Silva import MC_Silva                    # Modell 05
+from MonteCarlo.MonteCarlo_Yang import MC_Yang                      # Modell 06
+from MonteCarlo.MonteCarlo_Hills import MC_Hills                    # Modell 07
+from MonteCarlo.MonteCarlo_GreveDierfeld import MC_GreveDierfeld    # Modell 08
+from MonteCarlo.MonteCarlo_Ta import MC_Ta                          # Modell 09
+from MonteCarlo.MonteCarlo_Ekolu import MC_Ekolu                    # Modell 10
+from MonteCarlo.MonteCarlo_Possan import MC_Possan                  # Modell 11
+
+
 
 class app_MonteCarlo():
     
     def __init__(self):
-        
-        col1, col2 = st.columns([1,1])
-        with col1: 
-            RH = st.number_input("Relative Humidity: (%)", value=(65.0))
-            C_co2 = st.number_input("Peripheral Concentration by Weight of CO2", value=(10.0))
-            t_c = st.number_input("Curing time: (days)", value=(5.0))
-            p_sr = st.number_input("Probability of Driving Rain: (-)")
-
-        with col2: 
-            ToW = st.number_input("Time of wettness: (days)")
-            f_c = st.number_input("f_c")
-            c_nom = st.number_input("c_nom", value=20)
-            sample_total=st.number_input("sample_total", min_value=5, value=1000)
-        
-        t = st.number_input("Minimum lifetime: (years)", key="ABC1")
-        
-        if st.button("Calculate", key="CalculateMM"):
-            MC_fibGuiglia(RH, ToW, p_sr, t_c, f_c, C_co2, t, c_nom, sample_total)
-       
-        """
         st.subheader("Choose a Model:")
-        name = st.selectbox("Choose a Model:",("Model 01 - Häkkinen", "Model 02 - fib", "Model 03 - CECS", "Model 04 - Guiglia", "Model 05 - Silva", "Model 06 - Yang", "Model 07 - Hills", "Model 08 - Greve-Dierfeld", "Model 09 - Ta", "Model 10 - Ekolu", "Model 11 - Possan"), label_visibility="collapsed")
-        
-        if name =="Compare":
-            st.subheader("switch to tab 'compare'")
-        
-        if name == "Model 01 - Häkkinen":         # Häkkinen
-            app_Häkkinen(name)
+        name = st.selectbox("Choose a Model:", ("Model 01", "Model 02", "Model 03", "Model 04", "Model 05", "Model 06", "Model 07", "Model 08", "Model 09", "Model 10", "Model 11"), label_visibility="collapsed", key=("MC_select"))
+     
+        if name == "Model 01":      # Häkkinen
+            MC_Häkkinen()
                 
-        elif name == "Model 02 - fib":            # fib - leer
-            app_fib(name)
-        
-        elif name == "Model 03 - CECS":           # CECS
-            app_CECS(name)
-                
-        elif name == "Model 04 - Guiglia":        # Guiglia
-            app_Guiglia(name)
-               
-        elif name == "Model 05 - Silva":          # Silva
-            app_Silva(name)
-                
-        elif name == "Model 06 - Yang":           # Yang
-            app_Yang(name)
-            
-        elif name == "Model 07 - Hills":          # Hills
-            app_Hills(name)
-            
-        elif name == "Model 08 - Greve-Dierfeld": # Geve-Dierfeld
-            app_fibGreveDierfeld(name)    
-        
-        elif name == "Model 09 - Ta":             # Ta - leer
-           app_Ta(name)
-            
-        elif name == "Model 10 - Ekolu":          # Ekolu - leer
-            app_Ekolu(name)
+        elif name == "Model 02":    # fib
+            MC_fib()
 
-        elif name == "Model 11 - Possan":         # Possan - leer
-           app_Possan(name)
+        elif name == "Model 03":    # CECS
+            MC_CECS()
+                
+        # elif name == "Model 04":    # Guiglia
+        #     MC_Guiglia()
+               
+        elif name == "Model 05":    # Silva
+            MC_Silva()
+                
+        elif name == "Model 06":    # Yang
+            MC_Yang()
+            
+        # elif name == "Model 07":    # Hills
+        #     MC_Hills()
+            
+        elif name == "Model 08":    # Geve-Dierfeld
+            MC_GreveDierfeld()  
+        
+        elif name == "Model 09":    # Ta
+           MC_Ta()
+            
+        elif name == "Model 10":    # Ekolu 
+            MC_Ekolu()
+
+        elif name == "Model 11":    # Possan
+           MC_Possan()
+
            
-           """
+           

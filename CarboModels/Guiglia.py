@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Fri Mar 19 09:24:06 2021
 
-@author: gf5901
-"""
 from dataclasses import dataclass 
 from CarboModels.CarboModel import CarboModel 
 import math
@@ -12,21 +8,22 @@ import math
 class Guiglia(CarboModel):
     
     """
+    This is the carbonation model according to Guiglia.2013
     
     attributes
     ----------
     name : str
-        Name of the Model
+        name of cenario
     f_c : float
-        28-day compressive strenght (MPa)
+        28-day compressive strenght [MPa]
     RH : int
-        Relative humidity (%)
+        relative humidity [%]
     building : str
-        Tunnel or other buildings
+        building types ['Tunnel', 'others']
         
     Methods
     -------
-        Calculates self.karbo (mm/year^0.5)
+        calculates self.karbo [mm/year^0.5]
         
     """
     

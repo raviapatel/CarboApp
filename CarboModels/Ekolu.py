@@ -1,48 +1,31 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Mar 22 08:27:48 2021
-
-@author: gf5901
-"""
 
 from dataclasses import dataclass
 from CarboModels.CarboModel import CarboModel 
     
 @dataclass
-class Ekolu(CarboModel): #Model of Eklou.2018
+class Ekolu(CarboModel):
     """
-    This is the carbonation model according Ekolu.2018
-    k(t)
-    Variables:
-        name= Name of cenario
-        f_c (MPa) >20Mpa
-        RH(%)
-        CO2(-)
-        FA_c, (-)
-        GGBS_c (-)
-        Sheltered (bool)
-        Exposed (bool)
+    This is the carbonation model according to Ekolu.2018
         
     attributes
     ----------
     name : str
-        Name of the model
+        name of cenario
     f_c : float 
-        28-day compressive strenght (MPa)
+        28-day compressive strenght or long-term (field) strenght [MPa]
     RH : float 
-        Relative humidity (%)
+        relative humidity [%]
     CO2 : float
-        CO2 concentration (%)
-    FA_c : float
-        Fly ash content (-) 
-    GGBS_c : float 
-        Blast furnace slag content (-) 
+        CO2 concentration [%]
+    cem : str
+        Cement type ['CEM I', 'CEM II/A', 'CEM II/B', 'CEM IV/A', 'CEM III/A', 'CEM IV/B'] 
     ExCo : str
-        Exposure conditions ('Exposed', 'Sheltered')
+        exposure conditions ['Exposed', 'Sheltered']
     
     Methods
     -------
-        Calculates self.karbo (mm/year^0.5)     
+        calculates self.karbo [mm/year^0.5]     
         
     """
     color="orange"
@@ -51,46 +34,42 @@ class Ekolu(CarboModel): #Model of Eklou.2018
     f_c:float 
     RH:float 
     CO2:float 
-    FA_c:float 
-    GGBS_c:float 
+    Cem:str
     ExCo:str 
+    t:float
 
     
     def __post_init__(self):          # change for cement type
-    
         self.karbo=0
-        
         #Formula (9)
-        if  self.ExCo == "Sheltered":
+        if  self.ExCo == "Sheltered from Rain":
             self.e_s = 1
-            print("stop")
-        elif self.ExCo == ("Exposed" or "Outdoor"):
+        elif self.ExCo == "Exposed to Rain" or self.ExCo == "Outdoor":
             self.e_s = self.f_c**(-0.2)
-            print("stöple")
         else:
             self.karbo="NaN"
-            print("stop 1")
             return
         
         #Table (13)
-        if self.FA_c + self.GGBS_c <=0.2:
+        if self.Cem=="CEM I" or self.Cem=="CEM II/A":
             self.g=-1.5
-        elif self.FA_c<=0.3:
-            print("FA_c is ", self.FA_c, 'reccomened is 0.3')
+        elif self.Cem=="CEM II/B" or self.Cem =="CEM IV/A":
             self.g=-1.4
-        elif self.GGBS_c<=0.5:
-            print("GGBS_c is ", self.GGBS_c, 'reccomened is 0.5')
+        elif self.Cem=="CEM III/A" or self.Cem=="CEM IV/B":
             self.g=-1.4
         else:
             self.karbo="NaN"
             return
             
         #Formula (8)
-        self.e_h=16*((self.RH-35)/100)*(1-self.RH/100)**(1.5)    #for 50<=RH<=80
-
+        if 50<= self.RH <=80:
+            self.e_h=16*((self.RH-35)/100)*(1-self.RH/100)**(1.5)    #for 50<=RH<=80
+        else:
+            self.karbo="NaN"
+            return
         
         #Table (10)
-        if self.CO2 <=0.02: #ppm
+        if self.CO2 <=0.02: #[%]
             alpha= 1.4
             r=-1/4
         elif self.CO2 <= 0.03:
@@ -110,32 +89,27 @@ class Ekolu(CarboModel): #Model of Eklou.2018
             return
             
         #Formula (10)
-        if 20 < self.f_c <60:                              #[MPa]
+        if 20 < self.f_c <60:                #[MPa]
             self.e_co=alpha*self.f_c**r
         elif self.f_c >= 60:
             self.e_co=1
         else:
+            self.e_co=1
             self.karbo="NaN"
             return
-
-    def __repr__(self):
-        return("Ekolu.2018 f_c,28")
-    
-    def k(self,t):
-        #with f_c,28 strenght
-        if t < 6:                                      #[years] 
+        t = self.t
+        if t < 6:                             #[years] 
             a=0.35
             b= 0.6-(t**(0.5)/50)
         else:
             a=0.15*t
             b=0.5-(t**(0.5)/50)
-            
+          
         F_ct=t/(a+b*t) *self.f_c   
         cem=1000
-        if self.karbo==0:
-            self.karbo = self.e_h*self.e_s*self.e_co*cem*(F_ct)**self.g 
-            return self.karbo
-        else:
-            return self.karbo
+
+        self.karbo = self.e_h*self.e_s*self.e_co*cem*(F_ct)**self.g 
+     
     
-    
+    def __repr__(self):
+        return("Ekolu.2018 f_c,28")

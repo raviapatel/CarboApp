@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Fri Mar 19 16:53:02 2021
-
-@author: gf5901
-"""
 
 from CarboModels.CarboModel import CarboModel 
 from dataclasses import dataclass
@@ -12,36 +7,26 @@ import math
 @dataclass
 class Hills_fc(CarboModel):
     """
-    This is the carbonation model according Hills.2015 
-    k=konst=karbo
-    Variables:
-        name= Name of cenario
-        f_c [MPA]
-        C [kg/m^3 or %]
-        GGBS [kg/m^3 or %]
-        FA [kg/m^3 or %]
-        ExCo [bool]
-        Sheltered  [bool]
-        Indoors [bool]
+    This is the carbonation model according to Hills.2015 (strenght-depending model)
            
     attributes
     ----------
     name : str
-        Name of the Model
+        name of cenario
     mixture : str
-        content of concrete ('ordinary portland cement (OPC)','OPC + blast furnace slag','OPC + fly ash')
+        content of concrete ['Ordinary Portland Cement (OPC)','OPC + Blast Furnace Slag','OPC + Fly Ash']
     f_c : float
-        28-day compressive strenght (MPa)
-    ExpC : str
-        Exposure class (XC1-XC4)
-    RH : int
-        Relative humidity (%)
+        28-day compressive strenght [MPa]
+    ExCo : str
+        exposure condition ['Exposed to Rain','Sheltered to Rain','Indoors']
+    RH : float
+        relative humidity [%]
     CO2 : float
-        CO2 content (%)
+        CO2 content [%]
     
     Methods
     -------
-        Calculates self.karbo (mm/year^0.5)
+        calculates self.karbo [mm/year^0.5]
     
 
     """
@@ -58,11 +43,11 @@ class Hills_fc(CarboModel):
         self.I_FA=0
         self.I_C=0
         
-        if self.mixture=="ordinary portland cement (OPC)":
+        if self.mixture=="Ordinary Portland Cement (OPC)":
             self.I_C=1
-        elif self.mixture=="OPC + blast furnace slag":
+        elif self.mixture=="OPC + Blast Furnace Slag":
             self.I_GGBS=1
-        elif self.mixture=="OPC + fly ash":
+        elif self.mixture=="OPC + Fly Ash":
             self.I_FA=1
         else:
             self.karbo="NaN"
@@ -72,9 +57,9 @@ class Hills_fc(CarboModel):
         self.I_Sheltered=0
         self.I_Indoors=0
         
-        if self.ExCo=="Exposed":         #==True and self.Sheltered ==False and self.Indoors==False:
+        if self.ExCo=="Exposed to Rain":         #==True and self.Sheltered ==False and self.Indoors==False:
             self.I_Exposed=1
-        elif self.ExCo=="Sheltered":       #== True and self.ExCo==False and self.Indoors==False:
+        elif self.ExCo=="Sheltered from Rain":       #== True and self.ExCo==False and self.Indoors==False:
             self.I_Sheltered=1
         elif self.ExCo=="Indoor":            #==True and self.Sheltered == False and self.ExCo==False:
             self.I_Indoors=1

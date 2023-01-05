@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Fri Mar 19 13:52:09 2021
 
-@author: gf5901
-"""
 from dataclasses import dataclass
 from CarboModels.CarboModel import CarboModel 
 #import streamlit as st
@@ -12,63 +8,56 @@ from CarboModels.CarboModel import CarboModel
 class Häkkinen(CarboModel):
    
     """
-    This is the carbonation model according Häkkinen.1993 in DuraCrete.1998
+    This is the carbonation model according to Häkkinen.1993 in DuraCrete.1998
     
     attributes
     ----------
     name : str
-        Name of the model
-    C : float
-        Clinker content (kg/m³)
+        name of cenario
     f_c : float
-        28-day compressive strenght (MPa)
+        28-day compressive strenght [MPa]  
+    exposed : str
+        if component is exposed to rain ['Exposed to rain', 'Sheltered from rain']
+    entrained : str
+        if component is air entrained ['Air entrained', 'Not air entrained']
+    C : float
+        clinker content [kg/m³]
     FA : float
-        Fly ash content (kg/m³) 
+        fly ash content [kg/m³] 
     SF : float
-        Silicia fume content (kg/m³) 
+        silicia fume content [kg/m³] 
     GGBS : 
-        Blast furnace slag content (kg/m³) 
+        blast furnace slag content [kg/m³] 
     
     Methods
     -------
-        Calculates self.karbo (mm/year^0.5)
-    
-    This is the carbonation model according Häkkinen.1993 in DuraCrete.1998
-    k=konst=karbo
-    Variables:
-        name= Name of cenario
-        Exposed (bool)
-        Sheltered (bool)
-        C (kg/m³) 
-        FA (kg/m³) 
-        SF (kg/m³) 
-        GGBS (kg/m³) 
-        f_c (MPa)
+        calculates self.karbo [mm/year^0.5]
+
     """
     
     name:str 
-    C:float 
     f_c:float
-    exposed:str  
-    entrained:str
+    ExCo:str  
+    AirEntrained:str 
+    C:float 
     FA:float 
     SF:float 
     GGBS:float 
     
     def __post_init__(self):
         
-        if self.exposed == "Exposed to rain":  #Tab A2 in DuraCRete.1998
+        if self.ExCo == "Exposed to Rain":  #Tab A2 in DuraCRete.1998
             self.c_env = 0.5
-        elif self.exposed == "Sheltered from rain":
+        elif self.ExCo == "Sheltered from Rain" or self.ExCo == "Indoor":
             self.c_env = 1.0   
         else:
             self.karbo="NaN"
             return
             
         
-        if self.entrained == "Air entrained":
+        if self.AirEntrained == "Air Entrained":
             self.c_air = 0.7
-        elif self.entrained == "Not air entrained":
+        elif self.AirEntrained == "Not Air Entrained":
             self.c_air = 1.0
         else:
             self.karbo="NaN"

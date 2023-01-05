@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Fri Mar 19 16:41:26 2021
 
-@author: gf5901
-"""
 from dataclasses import dataclass
 from CarboModels.CarboModel import CarboModel 
 import math
@@ -11,30 +7,24 @@ import math
 @dataclass
 class Hills_time(CarboModel):
     """
-    This is the carbonation model according Hills.2015 (time-depending model)
-    k(t)
-    Variables:
-        name= Name of cenario
-        C,GGBS,FA (kg/m³ or %)
-        Exposed, Sheltered, Indoors, origin (bool), origin =concrete made in Lab?
-
+    This is the carbonation model according to Hills.2015 (time-depending model)
    
     attributes
     ----------
     name : str
         Name of the Model
     mixture : str
-        
+        content of concrete ['Ordinary Portland Cement (OPC)','OPC + blast furnace slag','OPC + fly ash']
     ExCo : str
-        Exposure condition ('Exposed','Sheltered','Indoors','Other')
+        exposure condition ['Exposed','Sheltered','Indoors','Other']
     origin : str
-        Origin of the concrete ('Structural', 'Experimental')
+        origin of the concrete ['Structural', 'Experimental']
     age : float
-        Age of concrete (years)
+        age of concrete [years]
         
     Methods
     -------
-        Calculates self.karbo (mm/year^0.5)
+        calculates self.karbo [mm/year^0.5]
     
     """
     color="brown"
@@ -51,11 +41,11 @@ class Hills_time(CarboModel):
         self.I_FA=0
         self.I_C=0
         
-        if self.mixture=="ordinary portland cement (OPC)":
+        if self.mixture=="Ordinary Portland Cement (OPC)":
             self.I_C=1
-        elif self.mixture=="OPC + blast furnace slag":
+        elif self.mixture=="OPC + Blast Furnace Slag":
             self.I_GGBS=1
-        elif self.mixture=="OPC + fly ash":
+        elif self.mixture=="OPC + Fly Ash":
             self.I_FA=1
         else:
             self.karbo="NaN"
@@ -65,11 +55,11 @@ class Hills_time(CarboModel):
         self.I_Sheltered=0
         self.I_Indoors=0
         
-        if self.ExCo=="Exposed":         #==True and self.Sheltered ==False and self.Indoors==False:
+        if self.ExCo=="Exposed to Rain":         #==True and self.Sheltered ==False and self.Indoors==False:
             self.I_Exposed=1
-        elif self.ExCo=="Sheltered":       #== True and self.Exposed==False and self.Indoors==False:
+        elif self.ExCo=="Sheltered from Rain":       #== True and self.Exposed==False and self.Indoors==False:
             self.I_Sheltered=1
-        elif self.ExCo=="Indoors":            #==True and self.Sheltered == False and self.Exposed==False:
+        elif self.ExCo=="Indoor":            #==True and self.Sheltered == False and self.Exposed==False:
             self.I_Indoors=1
         else:
             self.karbo="NaN"
@@ -77,7 +67,7 @@ class Hills_time(CarboModel):
             
         if self.origin == "Experimental":
             self.I_exp=1
-        elif self.origin == "Strucutral":
+        elif self.origin == "Structural":
             self.I_exp=0
         else:
             self.karbo="NaN"
