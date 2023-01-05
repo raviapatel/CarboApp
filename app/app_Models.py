@@ -6,18 +6,17 @@ Created on Thu Jan  5 18:09:21 2023
 """
 import streamlit as st
 from dataclasses import dataclass
-from app_Models.app
-from app_Models.app_Häkkinen import app_Häkkinen
-from app_Models.app_fib import app_fib
-from app_Models.app_CECS import app_CECS
-from app_Models.app_Guiglia import app_Guiglia
-from app_Models.app_Silva import app_Silva
-from app_Models.app_Yang import app_Yang
-from app_Models.app_Hills import app_Hills
-from app_Models.app_GreveDierfeld import app_GreveDierfeld
-from app_Models.app_Ta import app_Ta
-from app_Models.app_Ekolu import app_Ekolu
-from app_Models.app_Possan import app_Possan
+from app_Model.app_Häkkinen import app_Häkkinen
+from app_Model.app_fib import app_fib
+from app_Model.app_CECS import app_CECS
+from app_Model.app_Guiglia import app_Guiglia
+from app_Model.app_Silva import app_Silva
+from app_Model.app_Yang import app_Yang
+from app_Model.app_Hills import app_Hills
+from app_Model.app_GreveDierfeld import app_GreveDierfeld
+from app_Model.app_Ta import app_Ta
+from app_Model.app_Ekolu import app_Ekolu
+from app_Model.app_Possan import app_Possan
 
 @dataclass
 class app_Models():
