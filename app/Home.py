@@ -5,10 +5,12 @@ Created on Mon Jan  2 13:27:45 2023
 @author: marco
 """
 import streamlit as st
+from dataclasses import dataclass
 
-class app_home:
+@dataclass
+class Home:
     
-    def __init__(self):
+    def __post_init__(self):
         st.subheader("Overwiew")
         st.markdown("""
 Hier finden Sie eine Übersicht der Modelle 

@@ -1,9 +1,11 @@
 import streamlit as st
+from dataclasses import dataclass
 from PIL import Image
     
-class app_overwiew:
+@dataclass
+class Overwiew:
     
-    def __init__(self):
+    def __post_init__(self):
         st.header("Overview of Models")
         
         with st.expander("Model 01"):

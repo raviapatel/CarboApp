@@ -1,9 +1,10 @@
 import streamlit as st
-from app.app_Home import app_home
-from app.app_Overwiew import app_overwiew
-from app.app_Compare import app_Compare
-from app.app_MonteCarlo import app_MonteCarlo
-from app.app_Models import app_Models
+from app.Home import Home
+from app.Overwiew import Overwiew
+from app.Models import Models
+from app.Compare import Compare
+from app.MonteCarlo import MonteCarlo
+
 
 #Aufbau Website:
 st.set_page_config(page_title="Carbonation Depth", page_icon="🏗️", layout="centered", initial_sidebar_state="auto", menu_items=None)

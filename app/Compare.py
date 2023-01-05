@@ -25,7 +25,7 @@ from CarboModels import Ekolu                #Modell10
 from CarboModels import Possan               #Modell11
 
 @dataclass
-class app_Compare():
+class Compare():
     
     def __post_init__(self):
         st.subheader("Choose Models to Compare:")
