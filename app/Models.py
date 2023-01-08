@@ -1,22 +1,18 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Jan  5 18:09:21 2023
 
-@author: marco
-"""
 import streamlit as st
 from dataclasses import dataclass
-from app_Models.app_Häkkinen import app_Häkkinen                        # Model 01
-from app_Models.app_fib import app_fib                                  # Model 02
-from app_Models.app_CECS import app_CECS                                # Model 03
-from app_Models.app_Guiglia import app_Guiglia                          # Model 04
-from app_Models.app_Silva import app_Silva                              # Model 05
-from app_Models.app_Yang import app_Yang                                # Model 06
-from app_Models.app_Hills import app_Hills                              # Model 07      
-from app_Models.app_GreveDierfeld import app_GreveDierfeld              # Model 08
-from app_Models.app_Ta import app_Ta                                    # Model 09
-from app_Models.app_Ekolu import app_Ekolu                              # Model 10
-from app_Models.app_Possan import app_Possan                            # Model 11
+from app.app_Models.app_Häkkinen import app_Häkkinen                # Model 01
+from app.app_Models.app_fib import app_fib                          # Model 02
+from app.app_Models.app_CECS import app_CECS                        # Model 03
+from app.app_Models.app_Guiglia import app_Guiglia                  # Model 04
+from app.app_Models.app_Silva import app_Silva                      # Model 05
+from app.app_Models.app_Yang import app_Yang                        # Model 06
+from app.app_Models.app_Hills import app_Hills                      # Model 07      
+from app.app_Models.app_GreveDierfeld import app_GreveDierfeld      # Model 08
+from app.app_Models.app_Ta import app_Ta                            # Model 09
+from app.app_Models.app_Ekolu import app_Ekolu                      # Model 10
+from app.app_Models.app_Possan import app_Possan                    # Model 11
 
 @dataclass
 class Models:

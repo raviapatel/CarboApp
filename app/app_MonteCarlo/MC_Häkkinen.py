@@ -6,9 +6,8 @@ Created on Tue Dec 20 11:22:25 2022
 """
 import streamlit as st
 import numpy as np
-import plotly.express as pex
 from dataclasses import dataclass
-from CarboModels import Häkkinen
+from CarboModels.Häkkinen import Häkkinen
 
 @dataclass
 class MC_Häkkinen():
@@ -41,21 +40,4 @@ class MC_Häkkinen():
                 bar.progress((1+i)/sample_total)
                 Calc_MC = Häkkinen(i, f_c, ExCo, AirEntrained, C, FA, SF, GGBS)
                 X.append(Calc_MC)
-            counter=0
-            x_cList=[]
-            for i in range(0,sample_total):
-                if X[i].karbo == "NaN":
-                    st.warning("Model not compatible with input values!")
-                    return
-                else:
-                    x_cList.append(X[i].x_c(t))
-                    if X[i].x_c(t)>c_nom:
-                        counter=counter+1
-            st.warning("Probability that concrete cover is not sufficient: " + str(round(counter/sample_total*100,2)) + "%")
-            #Diagramm:
-            res = {"X(t) [mm]":x_cList}
-            fig = pex.histogram(res, x="X(t) [mm]")
-            fig.add_vline(c_nom, line_dash="dash", line_color="green") #add_line(res1, x="X(t) [mm]")
-            st.plotly_chart(fig)   
-            #Tabelle:
-            st.dataframe(res, use_container_width=True)
+            Calc_MC.histogram(X, t, c_nom, sample_total)

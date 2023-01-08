@@ -1,28 +1,23 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sun Dec  4 21:27:30 2022
-
-@author: marco
-"""
 
 import streamlit as st
 import plotly.express as pex
 import pandas as pd
 import numpy as np
 from dataclasses import dataclass
-from CarboModels import Häkkinen             #Modell01
-from CarboModels import fib                  #Modell02.1
-from CarboModels import fibGuiglia           #Modell02.2
-from CarboModels import CECS220              #Modell03
-from CarboModels import Guiglia              #Modell04
-from CarboModels import Silva                #Modell05
-from CarboModels import Yang                 #Modell06
-from CarboModels import Hills_time           #Modell07.1
-from CarboModels import Hills_fc             #Modell07.2
-from CarboModels import GreveDierfeld        #Modell08
-from CarboModels import Ta                   #Modell09
-from CarboModels import Ekolu                #Modell10
-from CarboModels import Possan               #Modell11
+from CarboModels.Häkkinen import Häkkinen             #Modell01
+from CarboModels.fib import fib                       #Modell02.1
+from CarboModels.fibGuiglia import fibGuiglia         #Modell02.2
+from CarboModels.CECS220 import CECS220               #Modell03
+from CarboModels.Guiglia import Guiglia               #Modell04
+from CarboModels.Silva import Silva                   #Modell05
+from CarboModels.Yang import Yang                     #Modell06
+from CarboModels.Hills_time import Hills_time         #Modell07.1
+from CarboModels.Hills_fc import Hills_fc             #Modell07.2
+from CarboModels.GreveDierfeld import GreveDierfeld   #Modell08
+from CarboModels.Ta import Ta                         #Modell09
+from CarboModels.Ekolu import Ekolu                   #Modell10
+from CarboModels.Possan import Possan                 #Modell11
 
 @dataclass
 class Compare():
@@ -98,9 +93,6 @@ class Compare():
                     Finishing = st.radio("Choose Finishing of Component:", ["Nothing", "Paint", "Mortar", "Tile"], key="compare_21")
                 else: 
                     Finishing = st.radio("Choose Finishing of Component:", ["Nothing", "Plaster", "Paint", "Mortar", "Mortar + Plaster", "Mortar + Paint", "Tile"], key="compare_22")
-        if "Model 06" in compare or "Model 09" in compare:
-            with col2:
-                wc = st.number_input("Water / Cement Ratio: [-]", min_value=(0.0), value=(0.6), max_value=(1.0), step=(0.5), key="compare_23")
         if "Model 07" in compare: 
             with col1: 
                 mixture = st.radio("Choose Content in the Concrete:",["Ordinary Portland Cement (OPC)","OPC + Blast Furnace Slag","OPC + Fly Ash"], key="compare_24")
@@ -112,9 +104,9 @@ class Compare():
             with col1:
                 Origin = st.radio("Choose Origin of Component:",["Experimental", "Structural"], key="compare_27")
                 Age = st.number_input("Age of Concrete: [years] ", min_value=(0.0),value=(5.0), step=(0.5), key="compare_28")                
-        if "Model 08" in compare:
+        if "Model 06" in compare or "Model 08" in compare or "Model 09" in compare :
             with col1:
-                wb = st.number_input("Water / Binder Ratio: [-]",min_value=(0.0), value=(0.5), max_value=(0.65),step=(0.01), key="compare_29")
+                wb = st.number_input("Water / Binder Ratio: [-]", min_value=(0.0), value=(0.6), max_value=(1.0), step=(0.01), key="compare 29")
         if "Model 08" in compare or "Model 10" in compare or "Model 11" in compare:
             with col1: 
                 Cem = st.radio("Choose Cement Type:", ["CEM I", "CEM II/A","CEM II/A-L", "CEM II/A-S", "CEM II/B", "CEM II/B-S", "CEM III/A", "CEM IV/A", "CEM IV/B"], key="compare_30")
@@ -130,7 +122,7 @@ class Compare():
                 p_FA = st.number_input("Density of Fly Ash: [kg/m³]", value=(2580.0), min_value=(0.0), step=(0.5), key="compare_38")
                 p_w = st.number_input("Density of Water: [kg/m³]", value=(1000.0), min_value=(0.0), step=(0.5), key="compare_39")
                 phi_clinker = st.number_input("Cement Clinker Content: [-]",min_value=(0.0), value=(1.0), max_value=(1.0), step=(0.01), key="compare_40")
-                f_cem = st.number_input("Mean Cement Compressive Strenght: [N/mm²]",  min_value=(0.0), value=(42.5), step=(0.5), key="compare_41")
+                f_cem = st.number_input("Mean Cement Compressive Strenght: [N/mm²]",  min_value=(0.0), value=(42.5), max_value=(60.0), step=(0.5), key="compare_41")
                 S_max = st.number_input("Maximum Aggregate Size: [mm]", min_value=(8.0), value=(16.0), max_value=(31.5), step=(0.5), key="compare_42")
         if "Model 03" in compare:
             with col2:
@@ -183,7 +175,7 @@ class Compare():
                     data["Model"].append(Model05.name)
                     data["Carbonation Depth [mm]"].append(round(Model05.x_c(t),2))
             if "Model 06" in compare:
-                Model06 = Yang("Model 06", t, C, S, G, FA, GGBS, SF, wc, RH, CO2, ExCo, Finishing)
+                Model06 = Yang("Model 06", t, C, S, G, FA, GGBS, SF, wb, RH, CO2, ExCo, Finishing)
                 if Model06.karbo=="NaN":
                    st.warning("Model 06 incompatible with input values!")
                 else:
@@ -211,7 +203,7 @@ class Compare():
                     data["Model"].append(Model08.name)
                     data["Carbonation Depth [mm]"].append(round(Model08.x_c(t),2))
             if "Model 09" in compare:
-                Model09 = Ta("Model 09", C, p_c, wc, FA, p_FA, S, G, W, p_w, CaO, SO3, SiO2, Al2O3, Fe2O3, phi_clinker, S_max, f_cem, t_c, RH, T, CO2)
+                Model09 = Ta("Model 09", C, p_c, wb, FA, p_FA, S, G, W, p_w, CaO, SO3, SiO2, Al2O3, Fe2O3, phi_clinker, S_max, f_cem, t_c, RH, T, CO2)
                 if Model09.karbo=="NaN":
                     st.warning("Model 09 incompatible with input values!")
                 else:
@@ -236,7 +228,7 @@ class Compare():
             
             #Bar chart:       
             fig = pex.bar(data, x="Model", y="Carbonation Depth [mm]", color="Model")
-            fig.add_hline(y=average, line_dash="dot")
+            fig.add_hline(y=average, line_dash="dash", line_color="red")
             st.plotly_chart(fig, use_container_width=True)
             
             data["Model"].append("Average of Models")

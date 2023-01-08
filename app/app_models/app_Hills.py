@@ -6,8 +6,8 @@ Created on Wed Nov 30 16:22:18 2022
 """
 import streamlit as st
 from dataclasses import dataclass
-from CarboModels import Hills_time
-from CarboModels import Hills_fc
+from CarboModels.Hills_time import Hills_time
+from CarboModels.Hills_fc import Hills_fc
 
 @dataclass
 class app_Hills():  #Model 07

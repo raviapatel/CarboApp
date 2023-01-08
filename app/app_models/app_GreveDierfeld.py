@@ -6,7 +6,7 @@ Created on Wed Nov 30 16:22:18 2022
 """
 import streamlit as st
 from dataclasses import dataclass
-from CarboModels import GreveDierfeld
+from CarboModels.GreveDierfeld import GreveDierfeld
 
 @dataclass
 class app_GreveDierfeld(): #Model 08

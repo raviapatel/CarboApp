@@ -26,8 +26,8 @@ class Yang(CarboModel):
         ground granulated blast furnace slag content [kg/m³]
     SF : float
         silica fume content [kg/m³]
-    wc : float
-        water / cement ratio [-]
+    wb : float
+        water / binder ratio [-]
     RH : float
          relative humidity around concrete surface [%] 
     CO2 : float
@@ -51,7 +51,7 @@ class Yang(CarboModel):
     FA:float 
     GGBS:float 
     SF:float 
-    wc:float 
+    wb:float 
     RH:float 
     CO2:float 
     ExCo:str
@@ -131,15 +131,15 @@ class Yang(CarboModel):
     def D(self,t):
         b_h=(1-self.RH/100)**(0.6)  
                   # βh represents the effect of relative humidity (RH) on the CO2 diffusion rate
-        e_pu = 1.5 * self.wc**2
+        e_pu = 1.5 * self.wb**2
   
-        e_p=(0.1+2.62*self.wc**(4.2)*t*365)/(t*365*e_pu)
+        e_p=(0.1+2.62*self.wb**(4.2)*t*365)/(t*365*e_pu)
         D_co= 136.36*self.b_s* self.b_f* b_h *((self.S+self.G)/self.C)**(0.1) *(e_p)**2 #[cm^2/day]
         return D_co
         
     def a(self,t):
         M_ct=8.06* self.C *10**(-6)                     #[mol/cm^3] ???????????????????????????????????????
-        a_u=1.031*self.wc/(0.194+self.wc)               # ultimate degree (α∞) of hydration
+        a_u=1.031*self.wb/(0.194+self.wb)               # ultimate degree (α∞) of hydration
         a_h= t*365/(2+t*365)*a_u
         M_co = 44.01                            #[g/mol]
         a_co= a_h *M_ct * M_co                  #*10**(-6)     #[g/cm^3]

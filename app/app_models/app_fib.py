@@ -6,8 +6,8 @@ Created on Wed Nov 30 16:22:18 2022
 """
 import streamlit as st
 from dataclasses import dataclass
-from CarboModels import fib
-from CarboModels import fibGuiglia
+from CarboModels.fib import fib
+from CarboModels.fibGuiglia import fibGuiglia
 
 @dataclass
 class app_fib():

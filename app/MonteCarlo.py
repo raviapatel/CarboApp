@@ -1,22 +1,18 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Dec 19 11:45:48 2022
 
-@author: marco
-"""
 import streamlit as st
 from dataclasses import dataclass
-from app.app_MonteCarlo.MonteCarlo_Häkkinen import MC_Häkkinen              # Modell 01
-from app.app_MonteCarlo.MonteCarlo_fib import MC_fib                        # Modell 02
-from app.app_MonteCarlo.MonteCarlo_CECS import MC_CECS                      # Modell 03
-from app.app_MonteCarlo.MonteCarlo_Guiglia import MC_Guiglia                # Modell 04
-from app.app_MonteCarlo.MonteCarlo_Silva import MC_Silva                    # Modell 05
-from app.app_MonteCarlo.MonteCarlo_Yang import MC_Yang                      # Modell 06
-from app.app_MonteCarlo.MonteCarlo_Hills import MC_Hills                    # Modell 07
-from app.app_MonteCarlo.MonteCarlo_GreveDierfeld import MC_GreveDierfeld    # Modell 08
-from app.app_MonteCarlo.MonteCarlo_Ta import MC_Ta                          # Modell 09
-from app.app_MonteCarlo.MonteCarlo_Ekolu import MC_Ekolu                    # Modell 10
-from app.app_MonteCarlo.MonteCarlo_Possan import MC_Possan                  # Modell 11
+from app.app_MonteCarlo.MC_Häkkinen import MC_Häkkinen              # Model 01
+from app.app_MonteCarlo.MC_fib import MC_fib                        # Model 02
+from app.app_MonteCarlo.MC_CECS import MC_CECS                      # Model 03
+from app.app_MonteCarlo.MC_Guiglia import MC_Guiglia                # Model 04
+from app.app_MonteCarlo.MC_Silva import MC_Silva                    # Model 05
+from app.app_MonteCarlo.MC_Yang import MC_Yang                      # Model 06
+from app.app_MonteCarlo.MC_Hills import MC_Hills                    # Model 07
+from app.app_MonteCarlo.MC_GreveDierfeld import MC_GreveDierfeld    # Model 08
+from app.app_MonteCarlo.MC_Ta import MC_Ta                          # Model 09
+from app.app_MonteCarlo.MC_Ekolu import MC_Ekolu                    # Model 10
+from app.app_MonteCarlo.MC_Possan import MC_Possan                  # Model 11
 
 @dataclass
 class MonteCarlo():

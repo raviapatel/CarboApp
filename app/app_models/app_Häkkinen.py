@@ -6,7 +6,7 @@ Created on Wed Nov 30 16:11:10 2022
 """
 import streamlit as st
 from dataclasses import dataclass
-from CarboModels import Häkkinen
+from CarboModels.Häkkinen import Häkkinen
 
 @dataclass
 class app_Häkkinen():   #Modell01

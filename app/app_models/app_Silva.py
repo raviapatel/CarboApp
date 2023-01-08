@@ -6,7 +6,7 @@ Created on Wed Nov 30 16:22:18 2022
 """
 import streamlit as st
 from dataclasses import dataclass
-from CarboModels import Silva
+from CarboModels.Silva import Silva
 
 @dataclass
 class app_Silva():  #Model 05

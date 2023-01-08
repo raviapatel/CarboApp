@@ -6,7 +6,7 @@ Created on Wed Nov 30 16:22:18 2022
 """
 import streamlit as st
 from dataclasses import dataclass
-from CarboModels import CECS220
+from CarboModels.CECS220 import CECS220
 
 @dataclass
 class app_CECS():   #Model 03

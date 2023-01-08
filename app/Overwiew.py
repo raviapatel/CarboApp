@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import streamlit as st
 from dataclasses import dataclass
 from PIL import Image
@@ -6,7 +8,7 @@ from PIL import Image
 class Overwiew:
     
     def __post_init__(self):
-        st.header("Overview of Models")
+        st.subheader("Overview of Models")
         
         with st.expander("Model 01"):
             st.subheader("Häkkinen (1993)")
@@ -36,6 +38,9 @@ class Overwiew:
             col2.markdown(r"\small \sf mean \, compressive \, strength \, of \, concrete \, at \, age \, of \, 28 \, days")
         
         with st.expander("Model 03"):
+            image03 = Image.open("Model_Descriptions/Description_Model03.png")
+            st.image(image03, use_column_width=True)
+            
             st.subheader("CECS (2007)")
 
             st.markdown(r"The from Sun et al. \cite{Sun.2020} explained model from CECS (2007) describes the course of the carbonation depth $$x_c(t)$$ as follows:")
@@ -109,7 +114,9 @@ $$f_{cuk}$$:  charasteristic strength [MPa]
                         """)
 
         with st.expander("Model 04"):
-            st.subheader("Guiglia, Taliano (2013)")
+            image04 = Image.open("Model_Descriptions/Description_Model04.png")
+            st.image(image04, use_column_width=True)
+            
             st.markdown(r"The model of Guiglia and Taliano is based on the fib-Model Code 2010 (See Model 02) and on an extensive experimental campaign. In this campaign, 1350 compressive tests were performed as well as measurements of the carbonation depth on concrete samples up to 5 years old from important infrastructure structures, such as bridges and tunnels. The compressive strengths of the sampled concrete components ranged from 20 to 50 N/mm². The carbonation coefficient $$k$$ is described by Guiglia and Taliano as follows:")
             col1, col2 = st.columns([1,2])
             col1.markdown("for abutments and piers:")
@@ -122,11 +129,13 @@ $$f_{cuk}$$:  charasteristic strength [MPa]
             col2.markdown("mean value of the concrete compressive cylinder strength at 28 days")
         
         with st.expander("Model 05"):
-            st.subheader("Silva et al. (2014)")
+            image05 = Image.open("Model_Descriptions/Description_Model05.png")
+            st.image(image05, use_column_width=True)
 
         with st.expander("Model 06"):
             st.subheader("Yang et al. (2014)")
 
+            
         with st.expander("Model 07"):
             st.subheader("Hills et al. (2015)")
             

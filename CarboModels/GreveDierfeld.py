@@ -1,21 +1,8 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Fri Mar 19 11:14:34 2021
-
-@author: gf5901
-"""
-
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Mar 19 08:18:38 2021
-
-@author: gf5901
-"""
 
 from dataclasses import dataclass
 from CarboModels.CarboModel import CarboModel 
 import math
-import numpy as np
     
 @dataclass
 class GreveDierfeld(CarboModel):
@@ -147,7 +134,7 @@ class GreveDierfeld(CarboModel):
     
     def W(self, t):
         #p_dr= probability of driving rain [%], t in year
-        return (0.0767/t)**((((self.p_dr/100)*self.ToW/365)**self.bw)/2)
+        return (0.0767/t)**((((self.p_dr/100)*self.ToW/365)**self.b_w)/2)
 
 
        

@@ -23,8 +23,8 @@ class Ta(CarboModel):
         density of cement [kg/m³]
     p_FA : float 
         density of fly ash [kg/m³]
-    wc : float 
-        water / cement ratio [-]
+    wb : float 
+        water / binder ratio [-]
     S : float 
         sand content [kg/m³]
     G : float 
@@ -66,7 +66,7 @@ class Ta(CarboModel):
     name:str 
     C:float 
     p_c:float 
-    wc:float 
+    wb:float 
     FA:float 
     p_FA:float 
     S:float 
@@ -104,9 +104,9 @@ class Ta(CarboModel):
             self.karbo="NaN"
             return
         
-        f_c= (7.84*self.f_cem)/((1+self.wc*self.p_c/self.p_w+po_air*self.p_c/self.C)**2) # Fig.2 (54) #[]????
+        f_c = (7.84*self.f_cem)/((1+self.wb*self.p_c/self.p_w+po_air*self.p_c/self.C)**2) # Fig.2 (54) #[]????
         
-        D_co28=(10**(-7))*10**(-0.025*f_c)       #Fig.2 (25)         #[]???
+        D_co28 = (10**(-7))*10**(-0.025*f_c)       #Fig.2 (25)         #[]???
         RH=self.RH/100            #[-]
         f_RH = (1-RH)**2 *RH**(2.6)            #Fig.2 (12)          #RH in [-] ???
         
@@ -115,47 +115,21 @@ class Ta(CarboModel):
         f_SGC = ((self.S+self.G)/self.C)**(0.1)      #Fig.2 [11]                  #[-] with S,G,C in [kg/m³ Beton]
         
         
-        po= po_air + self.W/self.p_w - (0.249*(self.CaO-0.7* self.SO3) +0.191*self.SiO2 +1.118*self.Al2O3 - 0.357*self.Fe2O3)*self.C/1000     #po_carbon (n.u.) is the carbonated concrete porosity
-        if 0.5< self.wc<0.8:
+        po = po_air + self.W/self.p_w - (0.249*(self.CaO-0.7* self.SO3) +0.191*self.SiO2 +1.118*self.Al2O3 - 0.357*self.Fe2O3)*self.C/1000     #po_carbon (n.u.) is the carbonated concrete porosity
+        if 0.5< self.wb<0.8:
             n=1.8       #n (n.u.) is an empirical constant: n = 1.8 for 0.5 < W/C < 0.8. 
         else:
             self.karbo="NaN"
             return
-        f_wc= 2437.7* math.exp(-5.592*self.wc)
-        f_PwcFA = f_wc *( ( (0.93-3.95*0.94**(100*self.wc))*po -po_air ) / (self.W/self.p_w + self.C/self.p_c +self.FA/self.p_FA)  )**(n)
+        f_wb = 2437.7* math.exp(-5.592*self.wb)
+        f_PwbFA = f_wb *( ( (0.93-3.95*0.94**(100*self.wb))*po -po_air ) / (self.W/self.p_w + self.C/self.p_c +self.FA/self.p_FA)  )**(n)
         
-        f_tc= (1.9*10**(-2))/(10**(-0.025*f_c)) +(1- (1.9*10**(-2))/(10**(-0.025*f_c)))*math.sqrt(28/(0.01*self.t_c))
-        print()
-        print(po)
-        print(D_co28)
-        print(f_RH)
-        print(f_T)
-        print(f_SGC)
-        print(f_PwcFA)
-        print(f_tc)
-        self.D=D_co28 *f_RH * f_T * f_SGC *f_PwcFA *f_tc *365*24*60*60  #[m^2/year]=[m^2/s]**365*24*60*60 
-        print(self.D)
+        f_tc = (1.9*10**(-2))/(10**(-0.025*f_c)) +(1-(1.9*10**(-2))/(10**(-0.025*f_c)))*math.sqrt(28/(0.01*self.t_c))
+
+        self.D=D_co28 *f_RH * f_T * f_SGC *f_PwbFA *f_tc *365*24*60*60 #[m^2/year]=[m^2/s]**365*24*60*60 
+
         self.karbo = math.sqrt(2*self.D*self.CO2/self.a)*1000 #[mm/year^0.5]
         
     def __repr__(self):
         return("Ta.2016")
     
-    def a(self):
-        """
-        Returns
-        -------
-        float
-            [kg/m^3]
-
-        """
-        return self.a
-    
-    def D(self):
-        """
-        Returns
-        -------
-        float 
-            [m^2/year]
-
-        """
-        return self.D 

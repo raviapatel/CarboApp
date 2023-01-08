@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Wed Mar 17 16:05:10 2021
 
-@author: gf5901
-"""
 import numpy as np
 import pandas as pd
 import plotly.express as pex
+import plotly.graph_objects as go
 import streamlit as st
+from scipy.stats import beta
+
 
 class CarboModel():
     """
-    This is the standart Carbonation model.
+    This is the standard carbonation model.
     Variables:
     name = name of input data set (string)
     """
@@ -34,16 +33,17 @@ class CarboModel():
     def x_c(self, t):
         """
         
-        calculates one Carbonation depth for given time t 
+        calculates carbonation depth for given time t 
+        
         Parameters
         ----------
-        t(years): TYPE
-            Time
+        t : float
+            time [years]
 
         Returns
         -------
-        x_c(mm) : TYPE
-            cabonation depth
+        x_c : float
+            cabonation depth [mm]
             
         """
         x_c = self.k(t) * t**0.5
@@ -56,13 +56,13 @@ class CarboModel():
 
         Parameters
         ----------
-        t(years): List
-            Time
+        t : list 
+            Time [years]
 
         Returns
         -------
-        x_c(mm) : List with x.xx 
-            cabonation depth
+        x_c : list 
+            carbonation depth [mm]
             
         """
         t = int(t)
@@ -102,9 +102,59 @@ class CarboModel():
             res1=pd.DataFrame(res)
             st.download_button(("Download table"), res1.to_csv(sep=",", index=False, decimal=".", header=self.name), file_name=("CarbonationDepth.csv"))
 
+    def histogram(self, X, t, c_nom, sample_total):
+        """
         
+        Parameters
+        ----------
+        X : object
+            object of a model-class
+        t : float
+            time [years]
+        c_nom : float
+            concrete cover [mm]
+        sample_total : int
+            total of samples [-]
+
+        Methods
+        -------
+        Shows histogram and table or warning if model is not calculateable
+
+        """
+        counter = 0    
+        x_cList = []
+        for i in range(0,sample_total):
+            if X[i].karbo == "NaN":
+                st.warning("Model not compatible with input values!")
+                return
+            else:
+                x_cList.append(X[i].x_c(t))
+                if X[i].x_c(t)>c_nom:
+                    counter=counter+1
+        # Distribution of c_nom (Beta):
+        m=c_nom; s=8; a=0; b=5*c_nom; var=s**2                      #m=Mittelwert, s=Standardabweichung, a=Min, b=Max, var=Varianz
+        alpha_input = ((a-m)*(a*b-a*m-b*m+m**2+var))/(var*(b-a))
+        beta_input = -((b-m)*(a*b-a*m-b*m+m**2+var))/(var*(b-a))
+        res_c = beta.rvs(alpha_input, beta_input, scale=b-a, loc=a, size=sample_total)
         
+        st.warning("Probability that (constant) Concrete Cover is Sufficient according to this Model: " + str(round(100-counter/sample_total*100,2)) + "%")
+        # Histogram:
+        fig = go.Figure()
+        fig.add_trace(go.Histogram(x=x_cList, name="Carbonation Depth"))
+        fig.add_trace(go.Histogram(x=res_c, name="Concrete Cover"))
         
+        # Change Layout:
+        fig.update_layout(
+            barmode="overlay", xaxis_title_text="Depth [mm]", yaxis_title_text="Count")
+        # Reduce opacity to see both histograms
+        fig.update_traces(opacity=0.75)
+        fig.add_vline(c_nom, line_dash="dash", line_color="red")
+        st.plotly_chart(fig)
+
+        # Table:
+        #res_x = {"Depth [mm]":x_cList}
+        #st.dataframe(res_x, use_container_width=True)
+
         
         
         
