@@ -3,14 +3,18 @@
 import streamlit as st
 from dataclasses import dataclass
 from PIL import Image
+
+import base64
+from pathlib import Path
     
+
 @dataclass
 class Overwiew:
     
     def __post_init__(self):
         st.subheader("Overview of Models")
         
-        with st.expander("Model 01"):
+        with st.expander("Häkkinen"):
             st.subheader("Häkkinen (1993)")
 
             st.markdown(r"In [1] and [2], an experimental model by Häkkinen (1993) is explained, which describes the carbonation coefficient $$k$$ as follows:")
@@ -42,7 +46,7 @@ class Overwiew:
             st.image(image03, use_column_width=True)
             
             st.subheader("CECS (2007)")
-
+            
             st.markdown(r"The from Sun et al. \cite{Sun.2020} explained model from CECS (2007) describes the course of the carbonation depth $$x_c(t)$$ as follows:")
             st.markdown(r"$$x_c(t)=3K_{CO_2}K_{kl}K_{kt}K_{ks}K_{F}T^{0.25}RH^{1.5}(1-RH)({58\over f_{cuk}}-0.76)\sqrt{t}$$")
             col1, col2 =st.columns([1,3])
@@ -147,7 +151,12 @@ $$f_{cuk}$$:  charasteristic strength [MPa]
             
         with st.expander("Model 10"):
             st.subheader("Ekolu (2018)")
-            
+            pdf_path = Path("Model_Descriptions/Beschreibungen Modelle_neu.pdf")
+            base64_pdf = base64.b64encode(pdf_path.read_bytes()).decode("utf-8")
+            pdf_display = f"""
+                <iframe src="data:application/pdf;base64,{base64_pdf}" width="670px" height="1200px" type="application/pdf"></iframe>
+            """
+            st.markdown(pdf_display, unsafe_allow_html=True)
         with st.expander("Model 11"):
             st.subheader("Possan et al. (2021)")
             
@@ -248,6 +257,23 @@ $$f_{cuk}$$:  charasteristic strength [MPa]
         
         st.subheader("Model 11: Possan (2021)")
         col1, col2 = st.columns([3,1])
+        showstring = """
+                            <body>
+                            <div> <embed src="{Model_Descriptions/Beschreibungen Modelle_neu.pdf}" /> </div>
+                            </body>
+        
+                                """
+        st.markdown(showstring, unsafe_allow_html=True)
+        
+
+
+
+        pdf_path = Path("Model_Descriptions/Beschreibungen Modelle_neu.pdf")
+        base64_pdf = base64.b64encode(pdf_path.read_bytes()).decode("utf-8")
+        pdf_display = f"""
+            <iframe src="data:application/pdf;base64,{base64_pdf}" width="800px" height="2100px" type="application/pdf"></iframe>
+        """
+        st.markdown(pdf_display, unsafe_allow_html=True)
         
         st.header("Exposure classes:")
         col1, col2 = st.columns([1,3])
